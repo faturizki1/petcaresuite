@@ -34,7 +34,7 @@ export function useAddPrescription() {
 export function useRemovePrescription() {
   const qc = useQueryClient();
   return useMutation((id: string) => medicalRecordsService.removePrescription(id), {
-    onSuccess: (_, id) => qc.invalidateQueries('medicalRecord')
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['medicalRecord'] })
   });
 }
 
@@ -51,6 +51,6 @@ export function useUploadAttachment() {
 export function useRemoveAttachment() {
   const qc = useQueryClient();
   return useMutation((id: string) => medicalRecordsService.removeAttachment(id), {
-    onSuccess: () => qc.invalidateQueries('medicalRecord')
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['medicalRecord'] })
   });
 }

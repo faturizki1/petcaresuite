@@ -26,7 +26,7 @@ export default function CreateCustomerPage() {
     try {
       await mutation.mutateAsync({ fullName, whatsapp, email });
       alert('Customer created');
-      navigate('/customers');
+      navigate('/staff/customers');
     } catch (err: any) {
       alert('Error: ' + (err?.message || 'unknown'));
     }

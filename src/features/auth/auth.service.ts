@@ -55,9 +55,9 @@ export const authService = {
 
   async fetchProfile(userId: string, email: string) {
     const { data, error } = await supabase
-      .from('user_profiles')
+      .from('profiles')
       .select('full_name, role, is_active')
-      .eq('user_id', userId)
+      .eq('id', userId)
       .single();
 
     if (error || !data) {
@@ -76,8 +76,8 @@ export const authService = {
 
   async createProfile(userId: string, email: string, fullName: string, role: AuthUserPayload['role'] = 'customer') {
     const { data, error } = await supabase
-      .from('user_profiles')
-      .insert({ user_id: userId, email, full_name: fullName, role, is_active: true })
+      .from('profiles')
+      .insert({ id: userId, email, full_name: fullName, role, is_active: true })
       .select()
       .single();
 
@@ -105,9 +105,9 @@ export const authService = {
     }
 
     const { data, error } = await supabase
-      .from('user_profiles')
+      .from('profiles')
       .update(payload)
-      .eq('user_id', userId)
+      .eq('id', userId)
       .select()
       .single();
 

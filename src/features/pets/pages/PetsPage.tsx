@@ -1,26 +1,46 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Search, Plus } from 'lucide-react';
 import { useGetPets } from '../pets.hooks';
-import { Search } from 'lucide-react';
+import { PageHeader } from '@/components/common/PageHeader';
+import { Button, Input } from '@/components/ui';
 
 export default function PetsPage() {
   const [search, setSearch] = useState('');
   const [species, setSpecies] = useState<'all'|'dog'|'cat'|'bird'|'other'>('all');
-  const { data, isLoading } = useGetPets({ page: 1, pageSize: 12, search, species: species==='all'?undefined:species });
-
+  const { data, isLoading } = useGetPets({ page: 1, pageSize: 12, search, species: species === 'all' ? undefined : species });
   const items = data?.items ?? [];
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-semibold">Pets</h1>
-      </div>
+    <div className="p-6 space-y-6">
+      <PageHeader
+        title="Pets"
+        description="Track pet profiles, species, age, and owner assignments."
+        actions={
+          <Link to="/staff/pets/create">
+            <Button>
+              <Plus className="w-4 h-4 mr-2" />
+              New Pet
+            </Button>
+          </Link>
+        }
+      />
 
-      <div className="flex gap-3 mb-4">
-        <div className="flex items-center border rounded px-2">
-          <Search className="w-4 h-4 mr-2 text-gray-500" />
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search pet name" className="p-2 outline-none" />
+      <div className="grid gap-3 md:grid-cols-[1fr_auto]">
+        <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm">
+          <Search className="w-4 h-4 text-slate-500" />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by pet name"
+            className="border-0 px-0 ring-0 focus:ring-0"
+          />
         </div>
-        <select value={species} onChange={(e) => setSpecies(e.target.value as any)} className="p-2 border rounded">
+        <select
+          value={species}
+          onChange={(e) => setSpecies(e.target.value as any)}
+          className="rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm"
+        >
           <option value="all">All species</option>
           <option value="dog">Dog</option>
           <option value="cat">Cat</option>
@@ -29,13 +49,28 @@ export default function PetsPage() {
         </select>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
-        {isLoading ? <div>Loading...</div> : items.map((p: any) => (
-          <div key={p.id} className="p-4 border rounded">
-            <div className="font-semibold">{p.name}</div>
-            <div className="text-sm text-gray-500">{p.species} • {p.breed}</div>
-          </div>
-        ))}
+      <div className="grid gap-4 md:grid-cols-3">
+        {isLoading ? (
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 text-center">Loading...</div>
+        ) : items.length === 0 ? (
+          <div className="rounded-3xl border border-dashed border-slate-200 bg-slate-50 p-6 text-center text-slate-600">No pets found.</div>
+        ) : (
+          items.map((pet: any) => (
+            <Link
+              key={pet.id}
+              to={`/staff/pets/${pet.id}`}
+              className="block rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-lg font-semibold text-slate-900">{pet.name}</p>
+                  <p className="text-sm text-slate-500">{pet.species} • {pet.breed || 'Unknown'}</p>
+                </div>
+                <span className="text-sm text-slate-400">View</span>
+              </div>
+            </Link>
+          ))
+        )}
       </div>
     </div>
   );

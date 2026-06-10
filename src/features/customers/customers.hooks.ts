@@ -10,6 +10,24 @@ export function useCustomer(id?: string) {
   return useQuery(['customer', id], () => (id ? customersService.getCustomerById(id) : null), { enabled: !!id });
 }
 
+export function useCustomerPets(customerId?: string) {
+  return useQuery(['customerPets', customerId], () => (customerId ? customersService.getCustomerPets(customerId) : []), {
+    enabled: !!customerId
+  });
+}
+
+export function useCustomerInvoices(customerId?: string) {
+  return useQuery(['customerInvoices', customerId], () => (customerId ? customersService.getCustomerInvoices(customerId) : []), {
+    enabled: !!customerId
+  });
+}
+
+export function useCustomerActivityLog(customerId?: string) {
+  return useQuery(['customerActivity', customerId], () => (customerId ? customersService.getCustomerActivityLog(customerId) : []), {
+    enabled: !!customerId
+  });
+}
+
 export function useCreateCustomer() {
   const qc = useQueryClient();
   return useMutation((payload: CustomerFormData) => customersService.createCustomer(payload), {

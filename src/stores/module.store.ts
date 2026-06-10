@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { supabase } from '@/lib/supabase';
 import type { ModuleStatus } from '@/types';
 
 interface ModuleState {
@@ -22,6 +23,23 @@ const defaultModules: ModuleStatus = {
   website: false
 };
 
+function parseModuleStatus(value: unknown): ModuleStatus {
+  if (!value || typeof value !== 'object') {
+    return defaultModules;
+  }
+
+  return {
+    clinic: Boolean((value as Record<string, unknown>).clinic ?? defaultModules.clinic),
+    monitoring: Boolean((value as Record<string, unknown>).monitoring ?? defaultModules.monitoring),
+    inpatient: Boolean((value as Record<string, unknown>).inpatient ?? defaultModules.inpatient),
+    grooming: Boolean((value as Record<string, unknown>).grooming ?? defaultModules.grooming),
+    petshop: Boolean((value as Record<string, unknown>).petshop ?? defaultModules.petshop),
+    inventory: Boolean((value as Record<string, unknown>).inventory ?? defaultModules.inventory),
+    accounting: Boolean((value as Record<string, unknown>).accounting ?? defaultModules.accounting),
+    website: Boolean((value as Record<string, unknown>).website ?? defaultModules.website)
+  };
+}
+
 export const useModuleStore = create<ModuleState>((set) => ({
   modules: defaultModules,
   isLoading: false,
@@ -33,16 +51,19 @@ export const useModuleStore = create<ModuleState>((set) => ({
     set({ isLoading: true, error: null });
 
     try {
-      const response = await fetch('/api/settings/modules');
+      const { data, error } = await supabase
+        .from('settings')
+        .select('value')
+        .eq('key', 'modules')
+        .single();
 
-      if (!response.ok) {
-        throw new Error('Unable to fetch module status');
+      if (error) {
+        throw error;
       }
 
-      const data = (await response.json()) as ModuleStatus;
-      set({ modules: data, isLoading: false });
+      set({ modules: parseModuleStatus(data?.value), isLoading: false });
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown error';
+      const message = error instanceof Error ? error.message : 'Unable to load module settings';
       set({ error: message, isLoading: false });
     }
   }

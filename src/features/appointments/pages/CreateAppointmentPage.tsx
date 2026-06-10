@@ -14,10 +14,14 @@ export default function CreateAppointmentPage() {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!customerId.trim() || !petId.trim() || !service.trim() || !doctorId.trim() || !(slot || date)) {
+      alert('Please complete all required appointment fields.');
+      return;
+    }
+
     try {
       await mutation.mutateAsync({ customerId, petId, service, doctorId, scheduledAt: slot || date });
-      alert('Appointment created');
-      window.location.href = '/staff/appointments';
+      navigate('/staff/appointments');
     } catch (err: any) {
       alert('Error: ' + (err?.message || 'unknown'));
     }

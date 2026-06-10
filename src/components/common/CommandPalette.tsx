@@ -1,12 +1,19 @@
 import * as React from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import { Search, ChevronRight, X } from 'lucide-react';
+import { Search, ChevronRight, X, ArrowDown, ArrowUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/lib/supabase';
 
 interface CommandPaletteProps {
   open: boolean;
   onClose: () => void;
   routes?: { label: string; path: string }[];
+}
+
+interface SearchItem {
+  label: string;
+  path: string;
+  subtitle?: string;
 }
 
 const pages = [
@@ -19,27 +26,107 @@ export function CommandPalette({ open, onClose, routes }: CommandPaletteProps) {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
+  const [remoteResults, setRemoteResults] = useState<SearchItem[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   const availablePages = routes ?? pages;
 
-  const filtered = useMemo(
+  const filteredPages = useMemo(
     () => availablePages.filter((page) => page.label.toLowerCase().includes(query.toLowerCase())),
     [availablePages, query]
   );
 
+  const results = useMemo(() => {
+    const pageItems = filteredPages.map((page) => ({ label: page.label, path: page.path }));
+    return [...pageItems, ...remoteResults];
+  }, [filteredPages, remoteResults]);
+
   useEffect(() => {
-    const handler = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-        event.preventDefault();
-        onClose();
+    if (!open) {
+      setQuery('');
+      setRemoteResults([]);
+      setActiveIndex(0);
+      return;
+    }
+  }, [open]);
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [results.length]);
+
+  useEffect(() => {
+    if (!query.trim()) {
+      setRemoteResults([]);
+      return;
+    }
+
+    const debounce = window.setTimeout(async () => {
+      setIsSearching(true);
+      try {
+        const queryValue = query.trim();
+
+        const [customerResponse, petResponse] = await Promise.all([
+          supabase
+            .from('customers')
+            .select('id, full_name')
+            .textSearch('full_name', queryValue, { type: 'plain' })
+            .limit(5),
+          supabase
+            .from('pets')
+            .select('id, name')
+            .textSearch('name', queryValue, { type: 'plain' })
+            .limit(5)
+        ]);
+
+        const customerItems = customerResponse.data?.map((customer) => ({
+          label: `Customer: ${customer.full_name}`,
+          path: `/staff/customers/${customer.id}`,
+          subtitle: 'Customer record'
+        })) ?? [];
+
+        const petItems = petResponse.data?.map((pet) => ({
+          label: `Pet: ${pet.name}`,
+          path: `/staff/pets/${pet.id}`,
+          subtitle: 'Pet profile'
+        })) ?? [];
+
+        setRemoteResults([...customerItems, ...petItems]);
+      } catch {
+        setRemoteResults([]);
+      } finally {
+        setIsSearching(false);
       }
+    }, 250);
+
+    return () => window.clearTimeout(debounce);
+  }, [query]);
+
+  useEffect(() => {
+    const handleHotkeys = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
+        onClose();
+        return;
+      }
+
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        setActiveIndex((current) => Math.min(current + 1, results.length - 1));
+      }
+
+      if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        setActiveIndex((current) => Math.max(current - 1, 0));
+      }
+
+      if (event.key === 'Enter' && results.length) {
+        event.preventDefault();
+        navigate(results[activeIndex].path);
         onClose();
       }
     };
 
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [onClose]);
+    window.addEventListener('keydown', handleHotkeys);
+    return () => window.removeEventListener('keydown', handleHotkeys);
+  }, [activeIndex, navigate, onClose, results]);
 
   if (!open) return null;
 
@@ -51,7 +138,11 @@ export function CommandPalette({ open, onClose, routes }: CommandPaletteProps) {
             <Search className="h-5 w-5" />
             <span className="text-sm font-semibold">Search pages, customers, pets</span>
           </div>
-          <button className="rounded-full p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100" onClick={onClose}>
+          <button
+            className="rounded-full p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+            onClick={onClose}
+            aria-label="Close command palette"
+          >
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -64,24 +155,32 @@ export function CommandPalette({ open, onClose, routes }: CommandPaletteProps) {
             autoFocus
             aria-label="Search"
           />
-          <div className="mt-4 max-h-72 space-y-2 overflow-auto">
-            {filtered.map((item, index) => (
+          <div className="mt-4 max-h-72 overflow-auto">
+            {isSearching && (
+              <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-500 dark:bg-slate-900 dark:text-slate-400">Searching records…</div>
+            )}
+            {!isSearching && results.map((item, index) => (
               <button
-                key={item.path}
+                key={`${item.path}-${index}`}
                 onClick={() => {
                   navigate(item.path);
                   onClose();
                 }}
                 onMouseEnter={() => setActiveIndex(index)}
-                className={`flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left transition ${
+                className={`flex w-full flex-col rounded-2xl px-4 py-3 text-left transition ${
                   activeIndex === index ? 'bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-100' : 'text-slate-700 dark:text-slate-300'
                 }`}
               >
-                <span>{item.label}</span>
-                <ChevronRight className="h-4 w-4" />
+                <div className="flex items-center justify-between gap-2">
+                  <span>{item.label}</span>
+                  <ChevronRight className="h-4 w-4" />
+                </div>
+                {item.subtitle && <span className="mt-1 text-xs text-slate-500 dark:text-slate-400">{item.subtitle}</span>}
               </button>
             ))}
-            {!filtered.length && <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-500 dark:bg-slate-900 dark:text-slate-400">No matching results.</div>}
+            {!isSearching && !results.length && (
+              <div className="rounded-2xl bg-slate-50 p-4 text-sm text-slate-500 dark:bg-slate-900 dark:text-slate-400">No matching results.</div>
+            )}
           </div>
         </div>
       </div>

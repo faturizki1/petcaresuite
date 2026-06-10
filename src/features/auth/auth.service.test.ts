@@ -26,7 +26,7 @@ describe('authService', () => {
 
     const res = await authService.createProfile('u1', 'a@b.com', 'Alice', 'staff');
 
-    expect(supabaseMock.from).toHaveBeenCalledWith('user_profiles');
+    expect(supabaseMock.from).toHaveBeenCalledWith('profiles');
     expect(insert).toHaveBeenCalled();
     expect(res.id).toBe('u1');
     expect(res.email).toBe('a@b.com');
@@ -46,7 +46,7 @@ describe('authService', () => {
 
     const res = await authService.updateProfile('u1', { fullName: 'Bob', role: 'owner', isActive: false });
 
-    expect(supabaseMock.from).toHaveBeenCalledWith('user_profiles');
+    expect(supabaseMock.from).toHaveBeenCalledWith('profiles');
     expect(update).toHaveBeenCalled();
     expect(res.fullName).toBe('Bob');
     expect(res.role).toBe('owner');
@@ -62,7 +62,7 @@ describe('authService', () => {
 
     const res = await authService.fetchProfile('u2', 'c@d.com');
 
-    expect(supabaseMock.from).toHaveBeenCalledWith('user_profiles');
+    expect(supabaseMock.from).toHaveBeenCalledWith('profiles');
     expect(res.id).toBe('u2');
     expect(res.email).toBe('c@d.com');
     expect(res.fullName).toBe('Carol');

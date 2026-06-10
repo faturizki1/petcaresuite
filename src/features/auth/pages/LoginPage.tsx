@@ -1,14 +1,17 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Button, Card, Input } from '@/components/ui';
 import { useAuthActions } from '../auth.hooks';
 
 export function LoginPage() {
+  const location = useLocation();
   const { signIn } = useAuthActions();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const fromPath = (location.state as { from?: string } | null)?.from ?? '/dashboard';
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -16,7 +19,7 @@ export function LoginPage() {
     setIsLoading(true);
 
     try {
-      await signIn(email, password);
+      await signIn(email, password, fromPath);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unable to sign in');
     } finally {

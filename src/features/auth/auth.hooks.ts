@@ -10,11 +10,11 @@ export function useAuthActions() {
   const navigate = useNavigate();
 
   const signIn = useCallback(
-    async (email: string, password: string) => {
+    async (email: string, password: string, redirectTo = '/dashboard') => {
       const { user, session } = await authService.signIn(email, password);
       setUser(user);
       setSession(session);
-      navigate('/dashboard');
+      navigate(redirectTo, { replace: true });
     },
     [navigate, setSession, setUser]
   );

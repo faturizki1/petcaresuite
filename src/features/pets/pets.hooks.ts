@@ -9,6 +9,10 @@ export function usePet(id?: string) {
   return useQuery(['pet', id], () => (id ? petsService.getPetById(id) : null), { enabled: !!id });
 }
 
+export function usePetTimeline(id?: string) {
+  return useQuery(['petTimeline', id], () => (id ? petsService.getPetTimeline(id) : []), { enabled: !!id });
+}
+
 export function useCreatePet() {
   const qc = useQueryClient();
   return useMutation((payload: any) => petsService.createPet(payload), { onSuccess: () => qc.invalidateQueries(['pets']) });

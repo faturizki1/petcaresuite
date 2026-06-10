@@ -28,7 +28,7 @@ export default function EditCustomerPage() {
     try {
       await mutation.mutateAsync({ id, updates: { fullName, whatsapp, email } });
       alert('Updated');
-      navigate(`/customers/${id}`);
+      navigate(`/staff/customers/${id}`);
     } catch (err: any) {
       alert('Error: ' + (err?.message || 'unknown'));
     }
