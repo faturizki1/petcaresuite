@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Plus, Upload } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Button, Input } from '@/components/ui';
 import { useCreateMedicalRecord } from '../medical-records.hooks';
@@ -8,6 +8,7 @@ import { useCreateMedicalRecord } from '../medical-records.hooks';
 const emptyPrescription = { medication: '', dosage: '', frequency: '', duration: '' };
 
 export default function CreateMedicalRecordPage() {
+  const [searchParams] = useSearchParams();
   const [petId, setPetId] = useState('');
   const [doctorId, setDoctorId] = useState('');
   const [date, setDate] = useState('');
@@ -17,6 +18,11 @@ export default function CreateMedicalRecordPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
   const mutation = useCreateMedicalRecord();
+
+  useEffect(() => {
+    const paramPetId = searchParams.get('petId');
+    if (paramPetId) setPetId(paramPetId);
+  }, [searchParams]);
 
   function setPrescriptionField(index: number, field: keyof typeof emptyPrescription, value: string) {
     setPrescriptions((current) => current.map((item, i) => (i === index ? { ...item, [field]: value } : item)));

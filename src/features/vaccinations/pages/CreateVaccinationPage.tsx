@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Plus, CalendarDays } from 'lucide-react';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Button, Input } from '@/components/ui';
 import { useCreateVaccination } from '../vaccinations.hooks';
 
 export default function CreateVaccinationPage() {
+  const [searchParams] = useSearchParams();
   const [petId, setPetId] = useState('');
   const [vaccineName, setVaccineName] = useState('');
   const [dateAdministered, setDateAdministered] = useState('');
@@ -15,6 +16,11 @@ export default function CreateVaccinationPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
   const mutation = useCreateVaccination();
+
+  useEffect(() => {
+    const paramPetId = searchParams.get('petId');
+    if (paramPetId) setPetId(paramPetId);
+  }, [searchParams]);
 
   function validate() {
     const nextErrors: Record<string, string> = {};

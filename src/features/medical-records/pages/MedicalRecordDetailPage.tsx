@@ -178,7 +178,7 @@ export default function MedicalRecordDetailPage() {
                         </div>
                         <div className="flex items-center justify-between gap-3 text-sm text-slate-600">
                           <div>{item.dosage}</div>
-                          <Button type="button" variant="danger" onClick={() => removePrescription.mutate(item.id)}>
+                          <Button type="button" variant="danger" onClick={() => removePrescription.mutate({ id: item.id, recordId: id as string })}>
                             <Trash2 className="w-4 h-4" />
                           </Button>
                         </div>
@@ -211,7 +211,7 @@ export default function MedicalRecordDetailPage() {
                         <p className="text-sm font-semibold">{attachment.filename}</p>
                         <a href={attachment.url} className="text-sm text-slate-600 hover:text-slate-900">Open file</a>
                       </div>
-                      <Button type="button" variant="danger" onClick={() => removeAttachment.mutate(attachment.id)}>
+                      <Button type="button" variant="danger" onClick={() => removeAttachment.mutate({ id: attachment.id, recordId: id as string })}>
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>

@@ -110,9 +110,7 @@ export const vaccinationsService = {
       fileName: `vaccination-${id}.pdf`,
       issuedAt: new Date().toISOString()
     };
-  }
-
-,
+  },
 
   async attachCertificateUrl(id: string, url: string) {
     const { data, error } = await supabase

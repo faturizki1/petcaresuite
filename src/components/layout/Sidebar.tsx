@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Home, ShoppingCart, Wallet, Settings, Users, Stethoscope, PawPrint, Box, CalendarDays, FileText, ShieldCheck, HeartPulse, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Home, ShoppingCart, Wallet, Settings, Users, Stethoscope, PawPrint, Box, CalendarDays, FileText, ShieldCheck, HeartPulse, ChevronLeft, ChevronRight, Scissors, Package, DollarSign } from 'lucide-react';
 import { useAuthStore } from '@/stores/auth.store';
 import { useModuleStore } from '@/stores/module.store';
 import { useUIStore } from '@/stores/ui.store';
@@ -23,9 +23,13 @@ const items: NavItem[] = [
   { label: 'Monitoring', path: '/staff/monitoring', icon: HeartPulse, section: 'clinical', roles: ['owner', 'doctor', 'staff'], moduleKey: 'monitoring' },
   { label: 'Customers', path: '/staff/customers', icon: Users, section: 'operations', roles: ['owner', 'staff'], moduleKey: 'clinic' },
   { label: 'Pets', path: '/staff/pets', icon: PawPrint, section: 'operations', roles: ['owner', 'staff', 'customer'], moduleKey: 'clinic' },
+  { label: 'Inpatient', path: '/staff/inpatient', icon: HeartPulse, section: 'operations', roles: ['owner', 'staff'], moduleKey: 'inpatient' },
+  { label: 'Grooming', path: '/staff/grooming', icon: Scissors, section: 'operations', roles: ['owner', 'staff'], moduleKey: 'grooming' },
+  { label: 'Petshop', path: '/staff/petshop', icon: Package, section: 'operations', roles: ['owner', 'staff'], moduleKey: 'petshop' },
   { label: 'Inventory', path: '/staff/inventory', icon: Box, section: 'operations', roles: ['owner', 'staff'], moduleKey: 'inventory' },
   { label: 'POS', path: '/staff/pos', icon: ShoppingCart, section: 'finance', roles: ['owner', 'staff'], moduleKey: 'accounting' },
   { label: 'Billing', path: '/staff/invoices', icon: Wallet, section: 'finance', roles: ['owner', 'staff'], moduleKey: 'accounting' },
+  { label: 'Accounting', path: '/staff/accounting', icon: DollarSign, section: 'finance', roles: ['owner', 'staff'], moduleKey: 'accounting' },
   { label: 'Reports', path: '/dashboard/reports', icon: FileText, section: 'system', roles: ['owner'] },
   { label: 'Settings', path: '/dashboard/settings', icon: Settings, section: 'system', roles: ['owner'] }
 ];

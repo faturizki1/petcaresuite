@@ -11,14 +11,40 @@ export function useAppointment(id?: string) {
 
 export function useCreateAppointment() {
   const qc = useQueryClient();
-  return useMutation((payload: any) => appointmentsService.createAppointment(payload), { onSuccess: () => qc.invalidateQueries(['appointments']) });
+  return useMutation((payload: any) => appointmentsService.createAppointment(payload), {
+    onSuccess: () => qc.invalidateQueries(['appointments'])
+  });
 }
 
 export function useUpdateAppointmentStatus() {
   const qc = useQueryClient();
-  return useMutation(({ id, status }: any) => appointmentsService.updateAppointmentStatus(id, status), { onSuccess: () => qc.invalidateQueries(['appointments']) });
+  return useMutation(({ id, status }: any) => appointmentsService.updateAppointmentStatus(id, status), {
+    onSuccess: (_data, variables) => {
+      qc.invalidateQueries(['appointments']);
+      qc.invalidateQueries(['appointment', variables.id]);
+      qc.invalidateQueries(['calendarAppointments']);
+    }
+  });
+}
+
+export function useDoctors(search?: string) {
+  return useQuery(['appointmentDoctors', search], () => appointmentsService.getDoctors(search), {
+    enabled: !!search || search === ''
+  });
 }
 
 export function useGetDoctorAvailability(doctorId?: string, date?: string) {
-  return useQuery(['doctorAvailability', doctorId, date], () => (doctorId && date ? appointmentsService.getDoctorAvailability(doctorId, date) : null), { enabled: !!doctorId && !!date });
+  return useQuery(
+    ['doctorAvailability', doctorId, date],
+    () => (doctorId && date ? appointmentsService.getDoctorAvailability(doctorId, date) : null),
+    { enabled: !!doctorId && !!date }
+  );
+}
+
+export function useCalendarAppointments(from?: string, to?: string) {
+  return useQuery(
+    ['calendarAppointments', from, to],
+    () => (from && to ? appointmentsService.getCalendarAppointments(from, to) : []),
+    { enabled: !!from && !!to, keepPreviousData: true }
+  );
 }

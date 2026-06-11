@@ -13,9 +13,8 @@ export default function AppointmentDetailPage() {
 
   async function updateStatus(status: string) {
     try {
-      await mutation.mutateAsync({ id, status });
+      await mutation.mutateAsync({ id: id as string, status });
       alert('Status updated');
-      window.location.reload();
     } catch (err: any) {
       alert('Error: ' + (err?.message || 'unknown'));
     }
@@ -40,11 +39,11 @@ export default function AppointmentDetailPage() {
           <div><strong>Customer:</strong> {data.customer_id}</div>
           <div><strong>Doctor:</strong> {data.doctor_id}</div>
           <div><strong>Scheduled:</strong> {new Date(data.scheduled_at).toLocaleString()}</div>
-          <div className="mt-3 flex gap-2">
-            <button onClick={() => updateStatus('checked_in')} className="px-3 py-1 border rounded">Check-in</button>
-            <button onClick={() => updateStatus('in_consultation')} className="px-3 py-1 border rounded">Start</button>
-            <button onClick={() => updateStatus('completed')} className="px-3 py-1 border rounded">Complete</button>
-            <button onClick={() => updateStatus('cancelled')} className="px-3 py-1 border rounded">Cancel</button>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button disabled={mutation.isLoading || data.status !== 'scheduled'} onClick={() => updateStatus('checked_in')} className="px-3 py-1 border rounded disabled:opacity-50">Check-in</button>
+            <button disabled={mutation.isLoading || data.status !== 'checked_in'} onClick={() => updateStatus('in_consultation')} className="px-3 py-1 border rounded disabled:opacity-50">Start</button>
+            <button disabled={mutation.isLoading || data.status === 'completed' || data.status === 'cancelled'} onClick={() => updateStatus('completed')} className="px-3 py-1 border rounded disabled:opacity-50">Complete</button>
+            <button disabled={mutation.isLoading || data.status === 'completed'} onClick={() => updateStatus('cancelled')} className="px-3 py-1 border rounded disabled:opacity-50">Cancel</button>
           </div>
         </div>
         <div className="p-4 border rounded">Notes: {data.notes}</div>

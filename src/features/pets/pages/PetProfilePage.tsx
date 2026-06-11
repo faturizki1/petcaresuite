@@ -80,6 +80,18 @@ export default function PetProfilePage() {
 
           {tab === 'medical' && (
             <div className="space-y-4">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-lg font-semibold">Medical records</h2>
+                  <p className="text-sm text-slate-500">Visit notes and prescriptions for this pet.</p>
+                </div>
+                <Link
+                  to={`/doctor/medical-records/create?petId=${encodeURIComponent(id ?? '')}`}
+                  className="inline-flex items-center rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+                >
+                  New Record
+                </Link>
+              </div>
               {medicalRecordsQuery.isLoading ? (
                 <div className="text-sm text-slate-600">Loading medical records...</div>
               ) : medicalRecordsQuery.data?.items.length ? (
@@ -108,6 +120,18 @@ export default function PetProfilePage() {
 
           {tab === 'vaccinations' && (
             <div className="space-y-4">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-lg font-semibold">Vaccination history</h2>
+                  <p className="text-sm text-slate-500">Past vaccines and upcoming due dates.</p>
+                </div>
+                <Link
+                  to={`/staff/vaccinations/create?petId=${encodeURIComponent(id ?? '')}`}
+                  className="inline-flex items-center rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+                >
+                  New Vaccination
+                </Link>
+              </div>
               {vaccinationQuery.isLoading ? (
                 <div className="text-sm text-slate-600">Loading vaccination history...</div>
               ) : vaccinationQuery.data?.length ? (
@@ -132,6 +156,18 @@ export default function PetProfilePage() {
 
           {tab === 'monitoring' && (
             <div className="space-y-4">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-lg font-semibold">Monitoring history</h2>
+                  <p className="text-sm text-slate-500">Track recovery, weight, and follow-up care.</p>
+                </div>
+                <Link
+                  to={`/staff/monitoring/create?petId=${encodeURIComponent(id ?? '')}`}
+                  className="inline-flex items-center rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+                >
+                  New Entry
+                </Link>
+              </div>
               {monitoringQuery.isLoading ? (
                 <div className="text-sm text-slate-600">Loading monitoring history...</div>
               ) : monitoringQuery.data?.length ? (

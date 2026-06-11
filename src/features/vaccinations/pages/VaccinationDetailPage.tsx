@@ -63,23 +63,28 @@ export default function VaccinationDetailPage() {
               <p className="font-semibold">{record.certificateUrl ? 'Available' : 'Not generated yet'}</p>
             </div>
             {record.certificateUrl ? (
-              <Button as="a" href={record.certificateUrl} target="_blank" rel="noreferrer">
+              <a
+                href={record.certificateUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center rounded-md border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-900 transition hover:bg-slate-50"
+              >
                 <Download className="w-4 h-4 mr-2" />
                 Download
-              </Button>
+              </a>
             ) : (
               <Button
+                type="button"
                 onClick={async () => {
                   try {
                     const cert = await gen.mutateAsync(id as string);
                     await attach.mutateAsync({ id: id as string, url: cert.url });
-                    // open in new tab
                     window.open(cert.url, '_blank');
                   } catch (err) {
-                    // swallow; UI will show disabled state
+                    // ignore; validation and mutation state will handle errors
                   }
                 }}
-                disabled={gen.status === 'pending' || attach.status === 'pending'}
+                disabled={gen.isLoading || attach.isLoading}
               >
                 <Download className="w-4 h-4 mr-2" />
                 Generate Certificate

@@ -33,9 +33,17 @@ export function useAddPrescription() {
 
 export function useRemovePrescription() {
   const qc = useQueryClient();
-  return useMutation((id: string) => medicalRecordsService.removePrescription(id), {
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['medicalRecord'] })
-  });
+  return useMutation(
+    ({ id, recordId }: { id: string; recordId: string }) => medicalRecordsService.removePrescription(id),
+    {
+      onSuccess: (_data, variables) => {
+        if (variables?.recordId) {
+          qc.invalidateQueries(['medicalRecord', variables.recordId]);
+        }
+        qc.invalidateQueries(['medicalRecords']);
+      }
+    }
+  );
 }
 
 export function useUploadAttachment() {
@@ -50,7 +58,15 @@ export function useUploadAttachment() {
 
 export function useRemoveAttachment() {
   const qc = useQueryClient();
-  return useMutation((id: string) => medicalRecordsService.removeAttachment(id), {
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['medicalRecord'] })
-  });
+  return useMutation(
+    ({ id, recordId }: { id: string; recordId: string }) => medicalRecordsService.removeAttachment(id),
+    {
+      onSuccess: (_data, variables) => {
+        if (variables?.recordId) {
+          qc.invalidateQueries(['medicalRecord', variables.recordId]);
+        }
+        qc.invalidateQueries(['medicalRecords']);
+      }
+    }
+  );
 }

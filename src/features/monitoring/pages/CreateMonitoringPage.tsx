@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Plus, Activity } from 'lucide-react';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Button, Input } from '@/components/ui';
@@ -7,6 +7,7 @@ import { useCreateMonitoringEntry } from '../monitoring.hooks';
 import type { MonitoringCreatePayload } from '../monitoring.types';
 
 export default function CreateMonitoringPage() {
+  const [searchParams] = useSearchParams();
   const [petId, setPetId] = useState('');
   const [date, setDate] = useState('');
   const [weightKg, setWeightKg] = useState('');
@@ -17,6 +18,11 @@ export default function CreateMonitoringPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
   const mutation = useCreateMonitoringEntry();
+
+  useEffect(() => {
+    const paramPetId = searchParams.get('petId');
+    if (paramPetId) setPetId(paramPetId);
+  }, [searchParams]);
   const saving = ((mutation as any).isLoading ?? mutation.status === 'pending');
 
   function validate() {
