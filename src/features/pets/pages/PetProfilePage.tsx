@@ -56,19 +56,43 @@ export default function PetProfilePage() {
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
                   <div>
                     <p className="text-sm text-slate-500">Species</p>
-                    <p className="mt-1 font-semibold text-slate-900">{pet.species}</p>
+                    <p className="mt-1 font-semibold text-slate-900">{pet.species || 'Unknown'}</p>
                   </div>
                   <div>
                     <p className="text-sm text-slate-500">Breed</p>
                     <p className="mt-1 font-semibold text-slate-900">{pet.breed || 'Unknown'}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-slate-500">Age</p>
-                    <p className="mt-1 font-semibold text-slate-900">{pet.age ?? 'N/A'}</p>
+                    <p className="text-sm text-slate-500">Gender</p>
+                    <p className="mt-1 font-semibold text-slate-900">{pet.gender || 'Unknown'}</p>
                   </div>
                   <div>
                     <p className="text-sm text-slate-500">Owner</p>
-                    <p className="mt-1 font-semibold text-slate-900">{pet.ownerId}</p>
+                    <p className="mt-1 font-semibold text-slate-900">{pet.customerName || 'Unknown owner'}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-500">Birth date</p>
+                    <p className="mt-1 font-semibold text-slate-900">{pet.birthDate ? new Date(pet.birthDate).toLocaleDateString() : 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-500">Weight</p>
+                    <p className="mt-1 font-semibold text-slate-900">{pet.weight ? `${pet.weight} kg` : 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-500">Color</p>
+                    <p className="mt-1 font-semibold text-slate-900">{pet.color || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-500">Microchip</p>
+                    <p className="mt-1 font-semibold text-slate-900">{pet.microchipNumber || 'None'}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-500">Sterilized</p>
+                    <p className="mt-1 font-semibold text-slate-900">{pet.isSterilized ? 'Yes' : 'No'}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-500">Active</p>
+                    <p className="mt-1 font-semibold text-slate-900">{pet.isActive ? 'Yes' : 'No'}</p>
                   </div>
                 </div>
               </div>

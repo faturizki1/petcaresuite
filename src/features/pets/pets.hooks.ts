@@ -13,6 +13,16 @@ export function usePetTimeline(id?: string) {
   return useQuery(['petTimeline', id], () => (id ? petsService.getPetTimeline(id) : []), { enabled: !!id });
 }
 
+export function useSpecies() {
+  return useQuery(['species'], () => petsService.getSpecies(), { staleTime: 1000 * 60 * 5 });
+}
+
+export function useBreeds(speciesId?: string) {
+  return useQuery(['breeds', speciesId], () => (speciesId ? petsService.getBreedsBySpecies(speciesId) : []), {
+    enabled: !!speciesId
+  });
+}
+
 export function useCreatePet() {
   const qc = useQueryClient();
   return useMutation((payload: any) => petsService.createPet(payload), { onSuccess: () => qc.invalidateQueries(['pets']) });

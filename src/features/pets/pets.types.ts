@@ -1,22 +1,49 @@
-export type Species = 'dog' | 'cat' | 'bird' | 'other';
+export interface SpeciesOption {
+  id: string;
+  name: string;
+}
+
+export interface BreedOption {
+  id: string;
+  name: string;
+  speciesId: string;
+}
 
 export interface Pet {
   id: string;
   name: string;
-  species: Species;
-  breed?: string | null;
-  age?: number | null;
-  ownerId: string;
+  customerId: string;
+  customerName?: string | null;
   photoUrl?: string | null;
-  status?: string;
+  speciesId: string;
+  species?: string | null;
+  breedId: string;
+  breed?: string | null;
+  gender: 'male' | 'female' | 'unknown';
+  birthDate?: string | null;
+  weight?: number | null;
+  color?: string | null;
+  isSterilized: boolean;
+  microchipNumber?: string | null;
+  qrCode?: string | null;
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface PetFormData {
   name: string;
-  species: Species;
-  breed?: string;
-  age?: number;
-  ownerId: string;
+  customerId: string;
+  speciesId: string;
+  breedId: string;
+  gender: 'male' | 'female' | 'unknown';
+  birthDate?: string;
+  weight?: number;
+  color?: string;
+  isSterilized?: boolean;
+  microchipNumber?: string;
+  photoUrl?: string | null;
+  isActive?: boolean;
 }
 
 export interface WeightRecord { id: string; petId: string; weight: number; recordedAt: string }

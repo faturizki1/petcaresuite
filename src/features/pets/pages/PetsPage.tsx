@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Plus } from 'lucide-react';
-import { useGetPets } from '../pets.hooks';
+import { useGetPets, useSpecies } from '../pets.hooks';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Button, Input } from '@/components/ui';
 
 export default function PetsPage() {
   const [search, setSearch] = useState('');
-  const [species, setSpecies] = useState<'all'|'dog'|'cat'|'bird'|'other'>('all');
-  const { data, isLoading } = useGetPets({ page: 1, pageSize: 12, search, species: species === 'all' ? undefined : species });
+  const [speciesId, setSpeciesId] = useState('all');
+
+  const { data, isLoading } = useGetPets({ page: 1, pageSize: 12, search, speciesId: speciesId === 'all' ? undefined : speciesId });
+  const speciesQuery = useSpecies();
   const items = data?.items ?? [];
 
   return (
     <div className="p-6 space-y-6">
       <PageHeader
         title="Pets"
-        description="Track pet profiles, species, age, and owner assignments."
+        description="Track pet profiles, species, breeds, and active care plans."
         actions={
           <Link to="/staff/pets/create">
             <Button>
@@ -37,15 +39,16 @@ export default function PetsPage() {
           />
         </div>
         <select
-          value={species}
-          onChange={(e) => setSpecies(e.target.value as any)}
+          value={speciesId}
+          onChange={(e) => setSpeciesId(e.target.value)}
           className="rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm"
         >
           <option value="all">All species</option>
-          <option value="dog">Dog</option>
-          <option value="cat">Cat</option>
-          <option value="bird">Bird</option>
-          <option value="other">Other</option>
+          {speciesQuery.data?.map((species) => (
+            <option key={species.id} value={species.id}>
+              {species.name}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -64,7 +67,7 @@ export default function PetsPage() {
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-lg font-semibold text-slate-900">{pet.name}</p>
-                  <p className="text-sm text-slate-500">{pet.species} • {pet.breed || 'Unknown'}</p>
+                  <p className="text-sm text-slate-500">{pet.species || 'Unknown'} • {pet.breed || 'Unknown'}</p>
                 </div>
                 <span className="text-sm text-slate-400">View</span>
               </div>

@@ -10,10 +10,10 @@ import type {
 function mapPrescription(record: any): Prescription {
   return {
     id: record.id,
-    medication: record.medication,
-    dosage: record.dosage,
-    frequency: record.frequency,
-    duration: record.duration
+    medication: record.drug_name ?? record.medication,
+    dosage: record.dose ?? record.dosage,
+    frequency: record.instruction ?? record.frequency,
+    duration: record.duration_days !== undefined && record.duration_days !== null ? String(record.duration_days) : record.duration ?? ''
   };
 }
 
@@ -31,12 +31,19 @@ function mapMedicalRecord(record: any): MedicalRecord {
     id: record.id,
     appointmentId: record.appointment_id || record.appointmentId || null,
     petId: record.pet_id || record.petId,
+    petName: record.pets?.name ?? record.petName ?? null,
     doctorId: record.doctor_id || record.doctorId,
+    doctorName: record.doctors?.profiles?.full_name ?? record.doctorName ?? null,
+    recordType: record.record_type || record.recordType,
     date: record.date,
-    soap: record.soap,
-    prescriptions: Array.isArray(record.prescriptions)
-      ? record.prescriptions.map(mapPrescription)
-      : [],
+    notes: record.notes ?? null,
+    soap: {
+      subjective: record.subjective ?? record.soap?.subjective ?? '',
+      objective: record.objective ?? record.soap?.objective ?? '',
+      assessment: record.assessment ?? record.soap?.assessment ?? '',
+      plan: record.plan ?? record.soap?.plan ?? ''
+    },
+    prescriptions: Array.isArray(record.prescriptions) ? record.prescriptions.map(mapPrescription) : [],
     attachments: Array.isArray(record.medical_attachments)
       ? record.medical_attachments.map(mapAttachment)
       : Array.isArray(record.attachments)
@@ -50,8 +57,12 @@ function mapSummaryRecord(record: any): MedicalRecord {
     id: record.id,
     appointmentId: record.appointment_id || record.appointmentId || null,
     petId: record.pet_id || record.petId,
+    petName: record.pets?.name ?? record.petName ?? null,
     doctorId: record.doctor_id || record.doctorId,
+    doctorName: record.doctors?.profiles?.full_name ?? record.doctorName ?? null,
+    recordType: record.record_type || record.recordType,
     date: record.date,
+    notes: record.notes ?? null,
     soap: record.soap || { subjective: '', objective: '', assessment: '', plan: '' },
     prescriptions: [],
     attachments: []
@@ -63,14 +74,14 @@ export const medicalRecordsService = {
     const offset = (page - 1) * pageSize;
     let query: any = supabase
       .from('medical_records')
-      .select('id, pet_id, doctor_id, date', { count: 'exact' })
+      .select('id, appointment_id, pet_id, doctor_id, record_type, date, notes, pets(name), doctors(profiles(full_name))', { count: 'exact' })
       .order('date', { ascending: false });
 
     if (petId) query = query.eq('pet_id', petId);
     if (doctorId) query = query.eq('doctor_id', doctorId);
     if (search) {
       const term = `%${search}%`;
-      query = query.or(`pet_id.ilike.${term},doctor_id.ilike.${term}`);
+      query = query.or(`pets.name.ilike.${term},doctors.profiles.full_name.ilike.${term},record_type.ilike.${term},notes.ilike.${term}`);
     }
 
     const res = await query.range(offset, offset + pageSize - 1);
@@ -85,7 +96,7 @@ export const medicalRecordsService = {
   async getMedicalRecordById(id: string): Promise<MedicalRecord | null> {
     const { data, error } = await supabase
       .from('medical_records')
-      .select('*, prescriptions(*), medical_attachments(*)')
+      .select('*, prescriptions(*), medical_attachments(*), pets(name), doctors(profiles(full_name))')
       .eq('id', id)
       .single();
 
@@ -94,7 +105,7 @@ export const medicalRecordsService = {
   },
 
   async createMedicalRecord(payload: MedicalRecordCreatePayload): Promise<MedicalRecord> {
-    const { prescriptions = [], attachments = [], appointmentId, recordType, ...recordPayload } = payload;
+    const { prescriptions = [], attachments = [], appointmentId, recordType, notes, ...recordPayload } = payload;
     const { data: record, error } = await supabase
       .from('medical_records')
       .insert({
@@ -107,7 +118,7 @@ export const medicalRecordsService = {
         objective: recordPayload.soap.objective,
         assessment: recordPayload.soap.assessment,
         plan: recordPayload.soap.plan,
-        notes: recordPayload.soap.plan
+        notes: notes ?? null
       })
       .select()
       .single();
@@ -136,16 +147,24 @@ export const medicalRecordsService = {
   },
 
   async updateMedicalRecord(id: string, updates: any) {
-    const transformed = {
+    const transformed: any = {
       ...(updates.petId !== undefined ? { pet_id: updates.petId } : {}),
       ...(updates.doctorId !== undefined ? { doctor_id: updates.doctorId } : {}),
       ...(updates.date !== undefined ? { date: updates.date } : {}),
-      ...(updates.soap !== undefined ? { soap: updates.soap } : {})
+      ...(updates.recordType !== undefined ? { record_type: updates.recordType } : {}),
+      ...(updates.notes !== undefined ? { notes: updates.notes } : {})
     };
+
+    if (updates.soap) {
+      transformed.subjective = updates.soap.subjective;
+      transformed.objective = updates.soap.objective;
+      transformed.assessment = updates.soap.assessment;
+      transformed.plan = updates.soap.plan;
+    }
 
     const { data, error } = await supabase.from('medical_records').update(transformed).eq('id', id).select().single();
     if (error) throw new Error(error.message);
-    return data;
+    return data ? mapMedicalRecord(data) : null;
   },
 
   async addPrescription(recordId: string, prescription: Omit<Prescription, 'id'>) {
@@ -203,7 +222,13 @@ export const medicalRecordsService = {
   },
 
   async insertPrescriptions(recordId: string, prescriptions: Array<Omit<Prescription, 'id'>>) {
-    const rows = prescriptions.map((prescription) => ({ medical_record_id: recordId, ...prescription }));
+    const rows = prescriptions.map((prescription) => ({
+      medical_record_id: recordId,
+      drug_name: prescription.medication,
+      dose: prescription.dosage,
+      instruction: prescription.frequency,
+      duration_days: Number(prescription.duration) || 0
+    }));
     const { error } = await supabase.from('prescriptions').insert(rows);
     if (error) throw new Error(error.message);
     return true;

@@ -35,9 +35,9 @@ export default function AppointmentDetailPage() {
 
       <div className="mt-6 grid grid-cols-2 gap-4">
         <div className="p-4 border rounded">
-          <div><strong>Pet:</strong> {data.petId}</div>
-          <div><strong>Customer:</strong> {data.customerId}</div>
-          <div><strong>Doctor:</strong> {data.doctorId}</div>
+          <div><strong>Pet:</strong> {data.petName || data.petId}</div>
+          <div><strong>Customer:</strong> {data.customerName || data.customerId}</div>
+          <div><strong>Doctor:</strong> {data.doctorName || data.doctorId || 'Unassigned'}</div>
           <div><strong>Service:</strong> {data.service}</div>
           <div><strong>Appointment date:</strong> {new Date(`${data.appointmentDate}T${data.startTime}`).toLocaleString()}</div>
           <div className="mt-3 flex flex-wrap gap-2">

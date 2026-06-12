@@ -13,6 +13,7 @@ export default function CreateMedicalRecordPage() {
   const [doctorId, setDoctorId] = useState('');
   const [date, setDate] = useState('');
   const [recordType, setRecordType] = useState('consultation');
+  const [notes, setNotes] = useState('');
   const [soap, setSoap] = useState({ subjective: '', objective: '', assessment: '', plan: '' });
   const [prescriptions, setPrescriptions] = useState([emptyPrescription]);
   const [attachments, setAttachments] = useState<File[]>([]);
@@ -72,6 +73,7 @@ export default function CreateMedicalRecordPage() {
       doctorId,
       recordType,
       date,
+      notes,
       soap,
       prescriptions: filteredPrescriptions,
       attachments
@@ -123,6 +125,24 @@ export default function CreateMedicalRecordPage() {
               <option value="emergency">Emergency</option>
               <option value="surgery">Surgery</option>
             </select>
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-slate-700">Notes</label>
+            <textarea
+              rows={3}
+              value={notes}
+              onChange={(event) => setNotes(event.target.value)}
+              className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-200"
+            />
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-sm font-medium text-slate-700">Notes</label>
+            <textarea
+              rows={3}
+              value={notes}
+              onChange={(event) => setNotes(event.target.value)}
+              className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm shadow-sm focus:border-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-200"
+            />
           </div>
         </div>
 

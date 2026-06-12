@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight, LayoutGrid, List, CalendarDays } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { useCalendarAppointments } from '../appointments.hooks';
 import AppointmentStatusBadge from '../components/AppointmentStatusBadge';
 import { Button } from '@/components/ui';

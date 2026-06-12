@@ -11,14 +11,23 @@ describe('appointmentsService', () => {
   });
 
   it('createAppointment returns created appointment', async () => {
-    const returned = { data: { id: 'a1', customer_id: 'c1', pet_id: 'p1', doctor_id: null, service: 'Consult', scheduled_at: '2026-06-11T09:00:00.000Z', status: 'scheduled' }, error: null };
+    const returned = { data: { id: 'a1', customer_id: 'c1', pet_id: 'p1', doctor_id: null, service_id: 's1', services: { name: 'Consult' }, scheduled_at: '2026-06-11T09:00:00.000Z', status: 'scheduled' }, error: null };
     const single = vi.fn().mockResolvedValue(returned);
     const select = vi.fn(() => ({ single }));
     const insert = vi.fn(() => ({ select }));
     supabaseMock.from.mockReturnValue({ insert });
 
     const { appointmentsService } = await import('./appointments.service');
-    const res = await appointmentsService.createAppointment({ customerId: 'c1', petId: 'p1', service: 'Consult', scheduledAt: '2026-06-11T09:00:00.000Z' });
+    const res = await appointmentsService.createAppointment({
+      customerId: 'c1',
+      petId: 'p1',
+      serviceId: 's1',
+      doctorId: undefined,
+      appointmentDate: '2026-06-11',
+      startTime: '09:00:00',
+      endTime: '10:00:00',
+      notes: 'Test booking'
+    });
 
     expect(insert).toHaveBeenCalled();
     expect(res.service).toBe('Consult');

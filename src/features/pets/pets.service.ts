@@ -1,52 +1,105 @@
 import { supabase } from '@/lib/supabase';
-import type { Pet, PetFormData } from './pets.types';
+import type { Pet, PetFormData, SpeciesOption, BreedOption } from './pets.types';
+
+const PET_SELECT = `id, name, customer_id, photo_url, species_id, breed_id, gender, birth_date, weight, color, is_sterilized, microchip_number, qr_code, is_active, created_at, updated_at, species(name), breeds(name), customers(full_name)`;
+
+function mapPet(record: any): Pet {
+  return {
+    id: record.id,
+    name: record.name,
+    customerId: record.customer_id,
+    customerName: record.customers?.full_name ?? null,
+    photoUrl: record.photo_url ?? null,
+    speciesId: record.species_id,
+    species: record.species?.name ?? null,
+    breedId: record.breed_id,
+    breed: record.breeds?.name ?? null,
+    gender: record.gender ?? 'unknown',
+    birthDate: record.birth_date ?? null,
+    weight: record.weight ?? null,
+    color: record.color ?? null,
+    isSterilized: record.is_sterilized ?? false,
+    microchipNumber: record.microchip_number ?? null,
+    qrCode: record.qr_code ?? null,
+    isActive: record.is_active ?? true,
+    createdAt: record.created_at,
+    updatedAt: record.updated_at
+  };
+}
 
 export const petsService = {
-  async getPets({ page = 1, pageSize = 12, search, species }: any = {}) {
+  async getPets({ page = 1, pageSize = 12, search, speciesId }: any = {}) {
     const offset = (page - 1) * pageSize;
-    let query: any = supabase.from('pets').select('id, name, species, breed, age, owner_id, photo_url').order('created_at', { ascending: false });
+    let query: any = supabase.from('pets').select(PET_SELECT, { count: 'exact' }).order('created_at', { ascending: false });
     if (search) query = query.ilike('name', `%${search}%`);
-    if (species) query = query.eq('species', species);
+    if (speciesId) query = query.eq('species_id', speciesId);
     const res = await query.range(offset, offset + pageSize - 1);
     if (res.error) throw new Error(res.error.message);
-    return { items: res.data || [], total: res.count ?? (res.data || []).length };
+    const items = (res.data || []).map(mapPet);
+    return { items, total: res.count ?? items.length };
   },
 
   async getPetById(id: string): Promise<Pet | null> {
-    const { data, error } = await supabase.from('pets').select('id, name, species, breed, age, owner_id, photo_url').eq('id', id).single();
+    const { data, error } = await supabase.from('pets').select(PET_SELECT).eq('id', id).single();
     if (error) throw new Error(error.message);
     if (!data) return null;
-    return {
-      id: data.id,
-      name: data.name,
-      species: data.species,
-      breed: data.breed,
-      age: data.age,
-      ownerId: data.owner_id,
-      photoUrl: data.photo_url
-    };
+    return mapPet(data);
+  },
+
+  async getSpecies(): Promise<SpeciesOption[]> {
+    const { data, error } = await supabase.from('species').select('id, name').order('name', { ascending: true });
+    if (error) throw new Error(error.message);
+    return data || [];
+  },
+
+  async getBreedsBySpecies(speciesId: string): Promise<BreedOption[]> {
+    const { data, error } = await supabase.from('breeds').select('id, name, species_id').eq('species_id', speciesId).order('name', { ascending: true });
+    if (error) throw new Error(error.message);
+    return data || [];
   },
 
   async createPet(payload: PetFormData): Promise<Pet> {
-    const insert = { name: payload.name, species: payload.species, breed: payload.breed ?? null, age: payload.age ?? null, owner_id: payload.ownerId };
-    const { data, error } = await supabase.from('pets').insert(insert).select().single();
+    const insert = {
+      name: payload.name,
+      customer_id: payload.customerId,
+      species_id: payload.speciesId,
+      breed_id: payload.breedId,
+      gender: payload.gender,
+      birth_date: payload.birthDate ?? null,
+      weight: payload.weight ?? null,
+      color: payload.color ?? null,
+      is_sterilized: payload.isSterilized ?? false,
+      microchip_number: payload.microchipNumber ?? null,
+      photo_url: payload.photoUrl ?? null,
+      is_active: payload.isActive ?? true
+    };
+
+    const { data, error } = await supabase.from('pets').insert(insert).select(PET_SELECT).single();
     if (error) throw new Error(error.message);
-    return { id: data.id, name: data.name, species: data.species, breed: data.breed, age: data.age, ownerId: data.owner_id, photoUrl: data.photo_url };
+    return mapPet(data);
   },
 
   async updatePet(id: string, updates: Partial<PetFormData>) {
     const payload: any = {};
-    if (updates.name) payload.name = updates.name;
-    if (updates.species) payload.species = updates.species;
-    if (updates.breed !== undefined) payload.breed = updates.breed;
-    if (updates.age !== undefined) payload.age = updates.age;
-    const { data, error } = await supabase.from('pets').update(payload).eq('id', id).select().single();
+    if (updates.name !== undefined) payload.name = updates.name;
+    if (updates.customerId !== undefined) payload.customer_id = updates.customerId;
+    if (updates.speciesId !== undefined) payload.species_id = updates.speciesId;
+    if (updates.breedId !== undefined) payload.breed_id = updates.breedId;
+    if (updates.gender !== undefined) payload.gender = updates.gender;
+    if (updates.birthDate !== undefined) payload.birth_date = updates.birthDate ?? null;
+    if (updates.weight !== undefined) payload.weight = updates.weight;
+    if (updates.color !== undefined) payload.color = updates.color;
+    if (updates.isSterilized !== undefined) payload.is_sterilized = updates.isSterilized;
+    if (updates.microchipNumber !== undefined) payload.microchip_number = updates.microchipNumber ?? null;
+    if (updates.photoUrl !== undefined) payload.photo_url = updates.photoUrl;
+    if (updates.isActive !== undefined) payload.is_active = updates.isActive;
+
+    const { data, error } = await supabase.from('pets').update(payload).eq('id', id).select(PET_SELECT).single();
     if (error) throw new Error(error.message);
-    return data;
+    return mapPet(data);
   },
 
   async generateQRCode(id: string) {
-    // simple placeholder returning data URL
     return `https://api.qrserver.com/v1/create-qr-code/?data=pet:${id}&size=200x200`;
   },
 

@@ -78,18 +78,12 @@ export default function MedicalRecordDetailPage() {
               <p className="text-base font-semibold">{new Date(data.date).toLocaleDateString()}</p>
             </div>
             <div className="space-y-1">
-              <p className="text-sm text-slate-500">Pet ID</p>
-              <p className="text-base font-semibold">{data.petId}</p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm text-slate-500">Doctor ID</p>
-              <p className="text-base font-semibold">{data.doctorId}</p>
-            </div>
+            <p className="text-sm text-slate-500">Pet</p>
+            <p className="text-base font-semibold">{data.petName || data.petId}</p>
           </div>
-
-          <div className="flex flex-wrap gap-2 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-            {tabs.map((tab) => (
-              <button
+          <div className="space-y-1">
+            <p className="text-sm text-slate-500">Doctor</p>
+            <p className="text-base font-semibold">{data.doctorName || data.doctorId}</p>
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}

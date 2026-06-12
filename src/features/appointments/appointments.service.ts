@@ -15,8 +15,11 @@ function mapAppointment(record: any): Appointment {
     id: record.id,
     queueNumber: record.queue_number !== undefined && record.queue_number !== null ? String(record.queue_number) : record.queueNumber ?? null,
     customerId: record.customer_id ?? record.customerId,
+    customerName: record.customers?.full_name ?? record.customerName ?? null,
     petId: record.pet_id ?? record.petId,
+    petName: record.pets?.name ?? record.petName ?? null,
     doctorId: record.doctor_id ?? record.doctorId ?? null,
+    doctorName: record.doctors?.profiles?.full_name ?? record.doctorName ?? null,
     serviceId: record.service_id ?? record.serviceId,
     service: record.services?.name ?? record.service ?? '',
     notes: record.notes ?? null,
@@ -64,7 +67,7 @@ export const appointmentsService = {
     const offset = (page - 1) * pageSize;
     let query: any = supabase
       .from('appointments')
-      .select('id, queue_number, customer_id, pet_id, doctor_id, service_id, services(name), notes, appointment_date, start_time, end_time, status, created_at', { count: 'exact' })
+      .select('id, queue_number, customer_id, pet_id, doctor_id, service_id, services(name), customers(full_name), pets(name), doctors(profiles(full_name)), notes, appointment_date, start_time, end_time, status, created_at', { count: 'exact' })
       .order('appointment_date', { ascending: true })
       .order('start_time', { ascending: true });
 
@@ -94,7 +97,7 @@ export const appointmentsService = {
   async getAppointmentById(id: string): Promise<Appointment | null> {
     const { data, error } = await supabase
       .from('appointments')
-      .select('id, queue_number, customer_id, pet_id, doctor_id, service_id, services(name), notes, appointment_date, start_time, end_time, status, created_at')
+      .select('id, queue_number, customer_id, pet_id, doctor_id, service_id, services(name), customers(full_name), pets(name), doctors(profiles(full_name)), notes, appointment_date, start_time, end_time, status, created_at')
       .eq('id', id)
       .single();
     if (error) throw new Error(error.message);
@@ -102,7 +105,6 @@ export const appointmentsService = {
   },
 
   async createAppointment(payload: AppointmentFormData): Promise<Appointment> {
-    const endDate = payload.endTime;
     const queueNumber = await this.generateQueueNumber(payload.appointmentDate);
     const insert = {
       queue_number: queueNumber,
@@ -152,7 +154,7 @@ export const appointmentsService = {
   async getCalendarAppointments(from: string, to: string) {
     const { data, error } = await supabase
       .from('appointments')
-      .select('id, queue_number, customer_id, pet_id, doctor_id, service_id, services(name), notes, appointment_date, start_time, end_time, status, created_at')
+      .select('id, queue_number, customer_id, pet_id, doctor_id, service_id, services(name), customers(full_name), pets(name), doctors(profiles(full_name)), notes, appointment_date, start_time, end_time, status, created_at')
       .gte('appointment_date', from)
       .lte('appointment_date', to)
       .order('appointment_date', { ascending: true })

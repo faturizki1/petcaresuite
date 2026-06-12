@@ -49,12 +49,26 @@ export default function CustomerDetailPage() {
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <p className="text-sm text-slate-500">Whatsapp</p>
-                <p className="mt-2 text-slate-900">{customer.whatsapp || 'Not set'}</p>
+                <p className="text-sm text-slate-500">Contact</p>
+                <p className="mt-2 text-slate-900">{customer.whatsapp || 'No whatsapp'}</p>
+                <p className="mt-1 text-sm text-slate-600">{customer.email || 'No email'}</p>
               </div>
               <div>
-                <p className="text-sm text-slate-500">Email</p>
-                <p className="mt-2 text-slate-900">{customer.email || 'Not set'}</p>
+                <p className="text-sm text-slate-500">Address</p>
+                <p className="mt-2 text-slate-900">{customer.address || 'Not set'}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <p className="text-sm text-slate-500">Membership tier</p>
+                <p className="mt-2 text-slate-900">{customer.membershipTier || 'Standard'}</p>
+              </div>
+              <div>
+                <p className="text-sm text-slate-500">Notes</p>
+                <p className="mt-2 text-slate-900">{customer.notes || 'No notes added.'}</p>
               </div>
             </div>
           </div>
@@ -138,7 +152,7 @@ export default function CustomerDetailPage() {
                   <li key={entry.id} className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
                     <div className="flex items-center justify-between gap-3 text-sm text-slate-700">
                       <span>{new Date(entry.created_at).toLocaleDateString()}</span>
-                      <span className="font-semibold">{entry.event}</span>
+                      <span className="font-semibold">{entry.event || 'Log entry'}</span>
                     </div>
                     <p className="mt-2 text-sm text-slate-600">{entry.notes || 'No details available.'}</p>
                   </li>

@@ -18,8 +18,9 @@ export default function MedicalRecordsPage() {
   const columns = useMemo(
     () => [
       { key: 'date', title: 'Date', render: (record: any) => new Date(record.date).toLocaleDateString() },
-      { key: 'petId', title: 'Pet', render: (record: any) => record.petId },
-      { key: 'doctorId', title: 'Doctor', render: (record: any) => record.doctorId },
+      { key: 'type', title: 'Type', render: (record: any) => record.recordType ?? 'Consultation' },
+      { key: 'petName', title: 'Pet', render: (record: any) => record.petName || record.petId },
+      { key: 'doctorName', title: 'Doctor', render: (record: any) => record.doctorName || record.doctorId },
       { key: 'prescriptions', title: 'Prescriptions', render: (record: any) => record.prescriptions?.length ?? 0 },
       { key: 'attachments', title: 'Attachments', render: (record: any) => record.attachments?.length ?? 0 }
     ],

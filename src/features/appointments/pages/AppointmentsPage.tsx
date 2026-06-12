@@ -58,11 +58,11 @@ export default function AppointmentsPage() {
             <tbody>
               {items.map((a: any) => (
                 <tr key={a.id} className="border-b hover:bg-gray-50">
-                  <td className="p-3">{a.queue_number}</td>
+                  <td className="p-3">{a.queueNumber}</td>
                   <td className="p-3"><Link to={`/staff/appointments/${a.id}`}>{a.service}</Link></td>
-                  <td className="p-3">{a.pet_id}</td>
-                  <td className="p-3">{a.doctor_id}</td>
-                  <td className="p-3">{new Date(a.scheduled_at).toLocaleString()}</td>
+                  <td className="p-3">{a.petName || a.petId}</td>
+                  <td className="p-3">{a.doctorName || a.doctorId || 'Unassigned'}</td>
+                  <td className="p-3">{new Date(a.scheduledAt).toLocaleString()}</td>
                   <td className="p-3"><AppointmentStatusBadge status={a.status} /></td>
                 </tr>
               ))}
