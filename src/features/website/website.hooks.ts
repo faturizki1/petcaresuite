@@ -45,4 +45,24 @@ export function useManageTestimonial() {
   return useMutation({ mutationFn: (payload: any) => websiteService.manageTestimonial(payload), onSuccess: () => qc.invalidateQueries({ queryKey: ['testimonials'] }) });
 }
 
+export function useActiveServices() {
+  return useQuery({ queryKey: ['activeServices'], queryFn: () => websiteService.getActiveServices() });
+}
+
+export function useActiveDoctors() {
+  return useQuery({ queryKey: ['activeDoctors'], queryFn: () => websiteService.getActiveDoctors() });
+}
+
+export function useActiveTestimonials() {
+  return useQuery({ queryKey: ['activeTestimonials'], queryFn: () => websiteService.getActiveTestimonials() });
+}
+
+export function useLatestArticles() {
+  return useQuery({ queryKey: ['latestArticles'], queryFn: () => websiteService.getLatestArticles() });
+}
+
+export function useAllActiveServices() {
+  return useQuery({ queryKey: ['allActiveServices'], queryFn: () => websiteService.getAllActiveServices() });
+}
+
 export default {};

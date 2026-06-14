@@ -411,6 +411,54 @@ export const portalService = {
     };
   }
   ,
+  async getMyVaccinationsDue(customerId: string) {
+    const { data, error } = await supabase
+      .from('vaccination_reminders')
+      .select('id, remind_at, status, vaccination_record_id, vaccination_records(pet_id, vaccine_id, pets(name), vaccines(name))')
+      .eq('status', 'pending')
+      .lte('remind_at', new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString())
+      .order('remind_at', { ascending: true });
+
+    if (error) handleSupabaseError(error);
+
+    const petIds = await this.getCustomerPetIds(customerId);
+    const petIdSet = new Set(petIds);
+
+    return (data || [])
+      .filter((r: any) => {
+        const petId = r.vaccination_records?.pet_id;
+        return petId && petIdSet.has(petId);
+      })
+      .map((r: any) => ({
+        id: r.id,
+        petName: r.vaccination_records?.pets?.name ?? 'Unknown',
+        vaccineName: r.vaccination_records?.vaccines?.name ?? 'Unknown',
+        dueDate: r.remind_at,
+        status: r.status
+      }));
+  },
+
+  async getMyTodayMedications(customerId: string) {
+    const petIds = await this.getCustomerPetIds(customerId);
+    if (!petIds.length) return [];
+
+    const { data, error } = await supabase
+      .from('medication_schedules')
+      .select('id, drug_name, dose, schedule_time, status, pet_id, pets(name)')
+      .in('pet_id', petIds)
+      .eq('is_active', true);
+
+    if (error) handleSupabaseError(error);
+    return (data || []).map((ms: any) => ({
+      id: ms.id,
+      petName: ms.pets?.name ?? 'Unknown',
+      drugName: ms.drug_name,
+      dose: ms.dose,
+      scheduleTime: ms.schedule_time,
+      status: ms.status
+    }));
+  },
+
   async cancelAppointment(appointmentId: string): Promise<boolean> {
     // ensure appointment belongs to current customer
     const customerId = await this.getCurrentCustomerId();

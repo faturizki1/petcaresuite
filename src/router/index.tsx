@@ -12,7 +12,7 @@ import PortalOverviewPage from '@/features/portal/pages/PortalOverviewPage';
 import PortalPetsPage from '@/features/portal/pages/PortalPetsPage';
 import PortalAppointmentsPage from '@/features/portal/pages/PortalAppointmentsPage';
 import PortalInvoicesPage from '@/features/portal/pages/PortalInvoicesPage';
-import PortalPetDetailPage from '@/features/portal/pages/PortalPetDetailPage';
+import PortalPetProfilePage from '@/features/portal/pages/PortalPetProfilePage';
 import PortalInpatientPage from '@/features/portal/pages/PortalInpatientPage';
 import PortalGroomingPage from '@/features/portal/pages/PortalGroomingPage';
 import PortalNotificationsPage from '@/features/portal/pages/PortalNotificationsPage';
@@ -37,7 +37,7 @@ export function AppRoutes() {
       <Route element={<AuthGuard><PortalLayout /></AuthGuard>}>
         <Route path="portal" element={<CustomerRoute><PortalOverviewPage /></CustomerRoute>} />
         <Route path="portal/pets" element={<CustomerRoute><PortalPetsPage /></CustomerRoute>} />
-        <Route path="portal/pets/:id" element={<CustomerRoute><PortalPetDetailPage /></CustomerRoute>} />
+        <Route path="portal/pets/:id" element={<CustomerRoute><PortalPetProfilePage /></CustomerRoute>} />
         <Route path="portal/appointments" element={<CustomerRoute><PortalAppointmentsPage /></CustomerRoute>} />
         <Route path="portal/inpatient" element={<CustomerRoute><PortalInpatientPage /></CustomerRoute>} />
         <Route path="portal/grooming" element={<CustomerRoute><PortalGroomingPage /></CustomerRoute>} />

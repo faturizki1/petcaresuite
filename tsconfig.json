@@ -19,7 +19,8 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["vite/client", "vitest"]
+    "ignoreDeprecations": "5.0",
+    "types": []
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

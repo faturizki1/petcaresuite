@@ -115,6 +115,25 @@ export function usePortalInvoices(customerId?: string) {
   });
 }
 
+export function usePortalVaccinationsDue(customerId?: string) {
+  return useQuery(['portalVaccinationsDue', customerId], () => (customerId ? portalService.getMyVaccinationsDue(customerId) : []), {
+    enabled: Boolean(customerId)
+  });
+}
+
+export function usePortalTodayMedications(customerId?: string) {
+  return useQuery(['portalTodayMedications', customerId], () => (customerId ? portalService.getMyTodayMedications(customerId) : []), {
+    enabled: Boolean(customerId)
+  });
+}
+
+export function useLogMyPetMedication() {
+  const qc = useQueryClient();
+  return useMutation(({ scheduleId, status, notes }: { scheduleId: string; status: string; notes?: string }) => portalService.logMyPetMedication(scheduleId, status, notes), {
+    onSuccess: () => qc.invalidateQueries(['portalTodayMedications'])
+  });
+}
+
 export function usePortalSummary(customerId?: string) {
   return useQuery(['portalSummary', customerId], () => (customerId ? portalService.getPortalSummary(customerId) : Promise.resolve({ petCount: 0, appointmentCount: 0, invoiceCount: 0 })), {
     enabled: Boolean(customerId)

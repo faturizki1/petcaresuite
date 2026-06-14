@@ -65,6 +65,8 @@ const ArticlesPagePublic = lazy(() => import('@/features/website/pages/Public/Ar
 const ArticleDetailPage = lazy(() => import('@/features/website/pages/Public/ArticleDetailPage'));
 const ServicesPagePublic = lazy(() => import('@/features/website/pages/Public/ServicesPage'));
 const ContactPagePublic = lazy(() => import('@/features/website/pages/Public/ContactPage'));
+const DoctorsPage = lazy(() => import('@/features/website/pages/Public/DoctorsPage'));
+const BookingPage = lazy(() => import('@/features/website/pages/Public/BookingPage'));
 import {
   Home,
   Users,
@@ -123,7 +125,9 @@ export const publicRoutes: { path: string; element: ReactNode }[] = [
   { path: '/articles', element: <ArticlesPagePublic /> },
   { path: '/articles/:slug', element: <ArticleDetailPage /> },
   { path: '/services', element: <ServicesPagePublic /> },
-  { path: '/contact', element: <ContactPagePublic /> }
+  { path: '/contact', element: <ContactPagePublic /> },
+  { path: '/doctors', element: <DoctorsPage /> },
+  { path: '/booking', element: <BookingPage /> }
 ];
 
 export interface ProtectedRouteDefinition {
