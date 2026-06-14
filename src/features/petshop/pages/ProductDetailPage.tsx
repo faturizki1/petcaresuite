@@ -34,7 +34,7 @@ export default function ProductDetailPage() {
           <div className="md:col-span-2">
             <h3 className="text-sm font-medium text-slate-600">Variants</h3>
             <div className="mt-3 space-y-3">
-              {product.variants.map((v) => (
+              {product.variants.map((v: import('../petshop.types').ProductVariant) => (
                 <div key={v.id} className="rounded-2xl border border-slate-200 p-3">
                   <div className="flex items-center justify-between">
                     <div>

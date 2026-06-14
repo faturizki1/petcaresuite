@@ -21,7 +21,7 @@ export default function InvoiceDetailPage() {
     return <div className="p-6">Invoice not found.</div>;
   }
 
-  const totalRefunded = (invoice.refunds ?? []).reduce((sum, refund) => sum + Number(refund.amount || 0), 0);
+  const totalRefunded = (invoice.refunds ?? []).reduce((sum: number, refund: Record<string, unknown>) => sum + Number((refund.amount as number) || 0), 0);
 
   const handleRefundSubmit = async (amount: number, reason: string) => {
     await refundMutation.mutateAsync({ invoiceId: invoice.id, amount, reason, processedBy: 'staff' });
@@ -67,14 +67,14 @@ export default function InvoiceDetailPage() {
           <Card className="p-6">
             <h2 className="text-lg font-semibold">Items</h2>
             <div className="mt-4 space-y-3">
-              {(invoice.items ?? []).map((item) => (
-                <div key={item.id ?? `${item.name}-${item.reference_id}`} className="grid grid-cols-[1fr_auto_auto] gap-3 rounded-3xl border border-slate-200 bg-slate-50 p-4">
+              {(invoice.items ?? []).map((item: Record<string, unknown>, idx: number) => (
+                <div key={(item.id as string) ?? `${item.name}-${item.reference_id}-${idx}`} className="grid grid-cols-[1fr_auto_auto] gap-3 rounded-3xl border border-slate-200 bg-slate-50 p-4">
                   <div>
-                    <p className="font-medium text-slate-900">{item.name}</p>
-                    <p className="text-sm text-slate-500">{item.quantity} x {formatCurrency(item.unit_price)}</p>
+                    <p className="font-medium text-slate-900">{item.name as React.ReactNode}</p>
+                    <p className="text-sm text-slate-500">{String(item.quantity)} x {formatCurrency(Number(item.unit_price))}</p>
                   </div>
-                  <div className="text-right text-sm text-slate-500">{formatCurrency(item.discount)}</div>
-                  <div className="text-right font-semibold text-slate-900">{formatCurrency(item.total)}</div>
+                  <div className="text-right text-sm text-slate-500">{formatCurrency(Number(item.discount))}</div>
+                  <div className="text-right font-semibold text-slate-900">{formatCurrency(Number(item.total))}</div>
                 </div>
               ))}
               {(invoice.items ?? []).length === 0 && <div className="text-sm text-slate-500">No items attached to this invoice.</div>}
@@ -116,9 +116,9 @@ export default function InvoiceDetailPage() {
                 <div className="rounded-3xl border border-rose-200 bg-rose-50 p-4">
                   <p className="text-sm font-semibold text-rose-600">Refunds</p>
                   <div className="mt-3 space-y-2 text-sm text-slate-700">
-                    {invoice.refunds.map((refund) => (
-                      <div key={refund.id} className="grid gap-2 sm:grid-cols-[1fr_auto]">
-                        <div>{refund.reason || 'Refund issued'}</div>
+                    {invoice.refunds.map((refund: Record<string, unknown>, idx: number) => (
+                      <div key={(refund.id as string) ?? `refund-${idx}`} className="grid gap-2 sm:grid-cols-[1fr_auto]">
+                        <div>{(refund.reason as string) || 'Refund issued'}</div>
                         <div className="text-right font-semibold">{formatCurrency(Number(refund.amount || 0))}</div>
                       </div>
                     ))}

@@ -6,6 +6,7 @@ import { Button, Input } from '@/components/ui';
 
 export default function EditPetPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { data, isLoading } = usePet(id);
   const customersQuery = useCustomers({ page: 1, pageSize: 50 });
   const [name, setName] = useState('');

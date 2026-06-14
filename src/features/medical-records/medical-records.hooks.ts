@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { medicalRecordsService } from './medical-records.service';
-import type { MedicalRecordsQueryParams, MedicalRecordCreatePayload } from './medical-records.types';
+import type { MedicalRecordsQueryParams, MedicalRecordCreatePayload, MedicalRecord } from './medical-records.types';
 
 export function useMedicalRecords(params: MedicalRecordsQueryParams) {
   return useQuery(['medicalRecords', params], () => medicalRecordsService.getMedicalRecords(params), {

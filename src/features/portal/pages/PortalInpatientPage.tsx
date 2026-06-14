@@ -129,7 +129,7 @@ function InpatientReportList({ recordId, customerId }: { recordId: string; custo
         <Card key={observation.id} className="p-4">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-              <p className="text-sm text-slate-500">{formatDate(observation.observedAt, { year: 'numeric', month: 'long', day: '2-digit' })}</p>
+              <p className="text-sm text-slate-500">{formatDate(observation.observed_at, { year: 'numeric', month: 'long', day: '2-digit' })}</p>
               <p className="mt-2 text-slate-900">Temp: {observation.temperature}°C · Appetite: {observation.appetite}</p>
             </div>
             <div className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700">Condition: {observation.condition}</div>

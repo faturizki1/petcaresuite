@@ -5,6 +5,7 @@ import { EmptyState } from '@/components/common/EmptyState';
 import { useClinicalStats } from '../reports.hooks';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
+import { Loader2 } from 'lucide-react';
 
 export default function ClinicalReportsPage() {
   useDocumentTitle('Clinical Reports');

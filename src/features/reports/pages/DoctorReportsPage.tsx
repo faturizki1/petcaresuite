@@ -54,7 +54,7 @@ export default function DoctorReportsPage() {
               <BarChart data={rows} layout="vertical" margin={{ left: 100, right: 20, top: 20, bottom: 20 }}>
                 <XAxis type="number" />
                 <YAxis type="category" dataKey="doctorName" width={140} />
-                <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                <Tooltip formatter={(value) => formatCurrency(Number(value))} />
                 <Bar dataKey="revenue" fill="#2563eb" />
               </BarChart>
             </ResponsiveContainer>

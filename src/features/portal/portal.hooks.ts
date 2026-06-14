@@ -139,3 +139,16 @@ export function usePortalSummary(customerId?: string) {
     enabled: Boolean(customerId)
   });
 }
+
+export function useUploadOwnerPhoto() {
+  const qc = useQueryClient();
+  return useMutation(({ petId, file }: { petId: string; file: File }) => portalService.uploadOwnerPhoto(petId, file, ''), {
+    onSuccess: () => qc.invalidateQueries(['portalPetById'])
+  });
+}
+
+export function usePortalGroomingByPet(petId?: string) {
+  return useQuery(['portalGroomingByPet', petId], () => (petId ? portalService.getMyGroomingRecords() : []), {
+    enabled: Boolean(petId)
+  });
+}

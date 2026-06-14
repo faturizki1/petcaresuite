@@ -94,7 +94,7 @@ export default function MedicalRecordDetailPage() {
         </div>
 
         <div className="w-full">
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as typeof activeTab)}>
             <TabsList>
               {tabs.map((tab) => (
                 <TabsTrigger key={tab.id} value={tab.id}>

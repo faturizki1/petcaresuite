@@ -1,7 +1,6 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import type { Cart, CartItem, PaymentData, PaymentMethod } from '../pos.types';
 import { LOYALTY_REDEEM_RATE } from '@/lib/constants';
-import { v4 as uuidv4 } from 'uuid';
 
 interface CartState {
   cart: Cart;
@@ -46,7 +45,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       if (existing) {
         items = items.map((it) => it === existing ? { ...it, quantity: it.quantity + item.quantity, total: (it.unitPrice * (it.quantity + item.quantity)) - (it.discountAmount || 0) } : it);
       } else {
-        const id = uuidv4();
+        const id = crypto.randomUUID();
         items.push({ ...item, id, total: (item.unitPrice * item.quantity) - (item.discountAmount || 0) });
       }
       const newCart = { ...state.cart, items };

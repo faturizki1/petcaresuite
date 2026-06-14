@@ -47,7 +47,7 @@ export default function ProductFormPage() {
       setBarcode(product.barcode || '');
       setBasePrice(String(product.basePrice));
       setIsActive(product.isActive);
-      setVariants(product.variants.map((variant) => ({ ...variant, tempId: variant.id })));
+      setVariants(product.variants.map((variant: ProductVariant) => ({ ...variant, tempId: variant.id })));
     }
   }, [product]);
 
@@ -60,7 +60,7 @@ export default function ProductFormPage() {
   const totalStock = useMemo(() => variants.reduce((sum, variant) => sum + variant.stock, 0), [variants]);
 
   function addVariantRow() {
-    setVariants((current) => [...current, { id: '', tempId: `temp-${Date.now()}`, productId: '', name: '', size: '', weight: 0, color: '', price: 0, stock: 0 }]);
+    setVariants((current) => [...current, { id: '', tempId: `temp-${Date.now()}`, productId: '', name: '', size: '', weight: 0, color: '', price: 0, stock: 0, createdAt: new Date().toISOString() }]);
   }
 
   function updateVariant(index: number, field: keyof ProductVariant, value: string | number | null) {

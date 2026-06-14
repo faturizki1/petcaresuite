@@ -23,7 +23,7 @@ export default function CreateMonitoringPage() {
     const paramPetId = searchParams.get('petId');
     if (paramPetId) setPetId(paramPetId);
   }, [searchParams]);
-  const saving = ((mutation as any).isLoading ?? mutation.status === 'pending');
+  const saving = mutation.isLoading;
 
   function validate() {
     const nextErrors: Record<string, string> = {};

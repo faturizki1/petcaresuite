@@ -69,6 +69,7 @@ export interface ProductPayload {
 }
 
 export interface ProductUpdatePayload extends Partial<ProductPayload> {
+  isActive?: boolean;
   variants?: Array<Partial<ProductVariant> & { id?: string }>;
   images?: File[] | Array<{ url: string }>; // files to upload or existing urls
 }

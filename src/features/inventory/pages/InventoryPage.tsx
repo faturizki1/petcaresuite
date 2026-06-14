@@ -26,7 +26,7 @@ export default function InventoryPage() {
   const [batchPage, setBatchPage] = useState(1);
   const [movementPage, setMovementPage] = useState(1);
   const [movementSearch, setMovementSearch] = useState('');
-  const [movementType, setMovementType] = useState('');
+  const [movementType, setMovementType] = useState<'inbound' | 'outbound' | 'adjustment' | ''>('');
   const [itemName, setItemName] = useState('');
   const [unit, setUnit] = useState('pcs');
   const [price, setPrice] = useState('0');
@@ -416,7 +416,7 @@ export default function InventoryPage() {
                 <select
                   value={movementType}
                   onChange={(event) => {
-                    setMovementType(event.target.value);
+                    setMovementType(event.target.value as typeof movementType);
                     setMovementPage(1);
                   }}
                   className="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm shadow-sm"

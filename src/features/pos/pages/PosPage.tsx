@@ -161,7 +161,7 @@ export default function PosPage() {
       <div className="grid gap-6 grid-cols-1 xl:grid-cols-[1.2fr,1.4fr,420px]">
         <div className="space-y-4">
           <CustomerSearchPanel
-            selectedCustomerId={cart.customerId}
+            selectedCustomerId={cart.customerId ?? undefined}
             selectedCustomerName={cart.customerName ?? undefined}
             onSelect={handleSelectCustomer}
           />

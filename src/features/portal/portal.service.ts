@@ -44,13 +44,17 @@ export const portalService = {
 
     if (error) handleSupabaseError(error);
 
-    return (data || []).map((item: any) => ({
-      id: item.id,
-      name: item.name,
-      species: item.species?.name ?? 'Unknown',
-      breed: item.breeds?.name ?? 'Unknown',
-      photoUrl: item.photo_url ?? null
-    }));
+    return (data || []).map((item: any) => {
+      const speciesArr = item.species as Array<{ name: string }> | null;
+      const breedArr = item.breeds as Array<{ name: string }> | null;
+      return {
+        id: item.id,
+        name: item.name,
+        species: speciesArr?.[0]?.name ?? 'Unknown',
+        breed: breedArr?.[0]?.name ?? 'Unknown',
+        photoUrl: item.photo_url ?? null
+      };
+    });
   },
 
   async getPetForCustomer(customerId: string, petId: string): Promise<PortalPet | null> {
@@ -64,11 +68,13 @@ export const portalService = {
     if (error) handleSupabaseError(error);
     if (!data) return null;
 
+    const speciesArr = data.species as Array<{ name: string }> | null;
+    const breedArr = data.breeds as Array<{ name: string }> | null;
     return {
       id: data.id,
       name: data.name,
-      species: data.species?.name ?? 'Unknown',
-      breed: data.breeds?.name ?? 'Unknown',
+      species: speciesArr?.[0]?.name ?? 'Unknown',
+      breed: breedArr?.[0]?.name ?? 'Unknown',
       photoUrl: data.photo_url ?? null
     };
   },
@@ -94,11 +100,13 @@ export const portalService = {
     if (customerCheck.error) handleSupabaseError(customerCheck.error);
     if (!customerCheck.data) throw new AppError('You do not have access to this pet', 'FORBIDDEN');
 
+    const speciesArr = data.species as Array<{ name: string }> | null;
+    const breedArr = data.breeds as Array<{ name: string }> | null;
     return {
       id: data.id,
       name: data.name,
-      species: data.species?.name ?? 'Unknown',
-      breed: data.breeds?.name ?? 'Unknown',
+      species: speciesArr?.[0]?.name ?? 'Unknown',
+      breed: breedArr?.[0]?.name ?? 'Unknown',
       photoUrl: data.photo_url ?? null
     };
   },

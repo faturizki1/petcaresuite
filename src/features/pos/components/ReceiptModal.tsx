@@ -26,7 +26,7 @@ interface ReceiptModalProps {
 
 export function ReceiptModal({ open, onClose, invoiceNumber, cashier, customerName, cart, paymentInfo }: ReceiptModalProps) {
   const ref = useRef<HTMLDivElement | null>(null);
-  const handlePrint = useReactToPrint({ content: () => ref.current });
+  const handlePrint = useReactToPrint({ contentRef: ref });
 
   const sendWhatsApp = async (number?: string) => {
     if (!number) return;
@@ -84,7 +84,7 @@ export function ReceiptModal({ open, onClose, invoiceNumber, cashier, customerNa
         <DialogFooter>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
             <Button onClick={() => handlePrint()}>Print</Button>
-            <Button onClick={() => sendWhatsApp(paymentInfo?.phone)} disabled={!paymentInfo?.phone}>Send WhatsApp</Button>
+            <Button onClick={() => sendWhatsApp(paymentInfo?.phone ?? undefined)} disabled={!paymentInfo?.phone}>Send WhatsApp</Button>
             <Button variant="secondary" onClick={onClose}>Close</Button>
           </div>
         </DialogFooter>

@@ -5,7 +5,7 @@ import { PageHeader } from '@/components/common/PageHeader';
 import { Card, Button } from '@/components/ui';
 import { FileUpload } from '@/components/common/FileUpload';
 import { useDocumentTitle } from '@/hooks/useDocumentTitle';
-import { usePortalPetById, usePortalPetMedicalRecords, usePortalPetVaccinations, usePortalPetWeightHistory, usePortalPetMedications, useUploadOwnerPhoto, useLogMyPetMedication } from '../portal.hooks';
+import { usePortalPetById, usePortalPetMedicalRecords, usePortalPetVaccinations, usePortalPetWeightHistory, usePortalPetMedications, useUploadOwnerPhoto, useLogMyPetMedication, usePortalGroomingByPet } from '../portal.hooks';
 import { formatDate } from '@/lib/utils';
 
 export default function PortalPetProfilePage() {
@@ -20,6 +20,7 @@ export default function PortalPetProfilePage() {
 
   const uploadOwnerPhoto = useUploadOwnerPhoto();
   const logMedication = useLogMyPetMedication();
+  const groomingQuery = usePortalGroomingByPet(id);
 
   useDocumentTitle(petQuery.data?.name ?? 'Pet Profile');
 
@@ -31,16 +32,25 @@ export default function PortalPetProfilePage() {
         <div className="flex items-center justify-between">
           <div>
             <div className="text-sm text-slate-500">Owner</div>
-            <div className="text-lg font-semibold">{petQuery.data?.owner_name ?? petQuery.data?.customer_name}</div>
+            <div className="text-lg font-semibold">{petQuery.data?.name ?? 'Unknown'}</div>
           </div>
           <div>
-            <FileUpload onUpload={async (file) => {
-              try {
-                await uploadOwnerPhoto.mutateAsync({ petId: id, file });
-              } catch {
-                toast.error('Failed to upload photo. Please try again.');
-              }
-            }} />
+            <Button variant="outline" onClick={async () => {
+              const input = document.createElement('input');
+              input.type = 'file';
+              input.accept = 'image/*';
+              input.onchange = async (e) => {
+                const file = (e.target as HTMLInputElement).files?.[0];
+                if (file) {
+                  try {
+                    await uploadOwnerPhoto.mutateAsync({ petId: id as string, file });
+                  } catch {
+                    toast.error('Failed to upload photo. Please try again.');
+                  }
+                }
+              };
+              input.click();
+            }}>Upload Photo</Button>
           </div>
         </div>
       </Card>
@@ -150,13 +160,21 @@ export default function PortalPetProfilePage() {
               <h4 className="font-semibold mb-2">Documents</h4>
               <div className="text-sm text-slate-500">Upload and view documents like vaccine certificates.</div>
               <div className="mt-3">
-                <FileUpload onUpload={async (file) => {
-                  try {
-                    await uploadOwnerPhoto.mutateAsync({ petId: id, file });
-                  } catch {
-                    toast.error('Failed to log medication. Please try again.');
-                  }
-                }} />
+                <Button variant="outline" onClick={async () => {
+                  const input = document.createElement('input');
+                  input.type = 'file';
+                  input.onchange = async (e) => {
+                    const file = (e.target as HTMLInputElement).files?.[0];
+                    if (file) {
+                      try {
+                        await uploadOwnerPhoto.mutateAsync({ petId: id as string, file });
+                      } catch {
+                        toast.error('Failed to upload document. Please try again.');
+                      }
+                    }
+                  };
+                  input.click();
+                }}>Upload Document</Button>
               </div>
             </Card>
           )}

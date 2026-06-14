@@ -8,13 +8,14 @@ interface ConfirmDialogProps {
   description: string;
   onConfirm: () => void;
   isLoading?: boolean;
-  variant?: 'danger' | 'warning' | 'default';
+  variant?: 'danger' | 'warning' | 'default' | 'destructive';
 }
 
 const variantStyles: Record<NonNullable<ConfirmDialogProps['variant']>, string> = {
   default: 'bg-slate-900 text-white hover:bg-slate-800 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-slate-200',
   warning: 'bg-amber-500 text-white hover:bg-amber-600',
-  danger: 'bg-red-600 text-white hover:bg-red-700'
+  danger: 'bg-red-600 text-white hover:bg-red-700',
+  destructive: 'bg-red-600 text-white hover:bg-red-700'
 };
 
 export function ConfirmDialog({ open, onOpenChange, title, description, onConfirm, isLoading = false, variant = 'default' }: ConfirmDialogProps) {

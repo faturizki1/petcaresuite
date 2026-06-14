@@ -56,7 +56,11 @@ export const petsService = {
   async getBreedsBySpecies(speciesId: string): Promise<BreedOption[]> {
     const { data, error } = await supabase.from('breeds').select('id, name, species_id').eq('species_id', speciesId).order('name', { ascending: true });
     if (error) handleSupabaseError(error);
-    return data || [];
+    return (data || []).map((row: { id: string; name: string; species_id: string }) => ({
+      id: row.id,
+      name: row.name,
+      speciesId: row.species_id
+    }));
   },
 
   async createPet(payload: PetFormData): Promise<Pet> {

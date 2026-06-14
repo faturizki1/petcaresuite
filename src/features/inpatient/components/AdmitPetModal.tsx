@@ -49,13 +49,9 @@ export function AdmitPetModal({ cage, onSuccess, onClose }: AdmitPetModalProps) 
         return;
       }
 
-      const { data, error } = await inpatientService.searchPets(debouncedPetQuery);
+      const results = await inpatientService.searchPets(debouncedPetQuery);
       if (!active) return;
-      if (error) {
-        setPetResults([]);
-      } else {
-        setPetResults(data || []);
-      }
+      setPetResults(results);
     }
 
     searchPets();
@@ -72,13 +68,9 @@ export function AdmitPetModal({ cage, onSuccess, onClose }: AdmitPetModalProps) 
         return;
       }
 
-      const { data, error } = await inpatientService.searchDoctors(debouncedDoctorQuery);
+      const results = await inpatientService.searchDoctors(debouncedDoctorQuery);
       if (!active) return;
-      if (error) {
-        setDoctorResults([]);
-      } else {
-        setDoctorResults(data || []);
-      }
+      setDoctorResults(results);
     }
 
     searchDoctors();

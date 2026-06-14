@@ -57,7 +57,7 @@ export default function FinancialReportsPage() {
                     <Cell key={entry.serviceId || index} fill={['#2563eb', '#14b8a6', '#f59e0b', '#ef4444'][index % 4]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                <Tooltip formatter={(value) => formatCurrency(Number(value))} />
                 <Legend />
               </PieChart>
             </ResponsiveContainer>
@@ -77,8 +77,8 @@ export default function FinancialReportsPage() {
               <LineChart data={trend} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
-                <YAxis tickFormatter={(value) => formatCurrency(value)} />
-                <Tooltip formatter={(value: number) => formatCurrency(value)} />
+                <YAxis tickFormatter={(value) => formatCurrency(Number(value))} />
+                <Tooltip formatter={(value) => formatCurrency(Number(value))} />
                 <Legend />
                 <Line type="monotone" dataKey="value" stroke="#2563eb" name="Revenue" />
               </LineChart>
