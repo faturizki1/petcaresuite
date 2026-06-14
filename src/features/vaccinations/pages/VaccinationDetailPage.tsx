@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { ArrowLeft, Download } from 'lucide-react';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/ui';
@@ -80,8 +81,8 @@ export default function VaccinationDetailPage() {
                     const cert = await gen.mutateAsync(id as string);
                     await attach.mutateAsync({ id: id as string, url: cert.url });
                     window.open(cert.url, '_blank');
-                  } catch (err) {
-                    // ignore; validation and mutation state will handle errors
+                  } catch {
+                    toast.error('Failed to generate certificate. Please try again.');
                   }
                 }}
                 disabled={gen.isLoading || attach.isLoading}

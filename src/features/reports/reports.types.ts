@@ -52,3 +52,4 @@ export interface ProductStat {
 export interface FinancialReport {
   summary: FinancialSummary;
   monthlyTrend: MonthlyPoint[];
+}

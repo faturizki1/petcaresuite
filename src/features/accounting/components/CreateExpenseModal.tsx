@@ -11,8 +11,7 @@ export default function CreateExpenseModal({ open, onOpenChange }: { open: boole
   const [description, setDescription] = useState('');
   const [date, setDate] = useState('');
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleSubmit() {
     await createTx.mutateAsync({ accountId, type: 'debit', amount: Number(amount), description, transactionDate: date || undefined });
     onOpenChange(false);
   }
@@ -23,7 +22,7 @@ export default function CreateExpenseModal({ open, onOpenChange }: { open: boole
         <DialogHeader>
           <DialogTitle>Create Expense</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+        <div className="space-y-4 mt-4">
           <div>
             <label className="block text-sm text-slate-700">Account</label>
             <select value={accountId} onChange={(e) => setAccountId(e.target.value)} className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm">
@@ -44,10 +43,10 @@ export default function CreateExpenseModal({ open, onOpenChange }: { open: boole
             <Input value={description} onChange={(e) => setDescription(e.target.value)} />
           </div>
           <DialogFooter>
-            <Button type="submit" disabled={createTx.isLoading}>Create</Button>
+            <Button type="button" onClick={handleSubmit} disabled={createTx.isLoading}>Create</Button>
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
           </DialogFooter>
-        </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

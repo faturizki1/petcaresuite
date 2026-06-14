@@ -30,3 +30,28 @@ export function useCompleteGrooming() {
     onSuccess: () => qc.invalidateQueries(['groomingRecords'])
   });
 }
+
+export function useUpdateGroomingStatus() {
+  const qc = useQueryClient();
+  return useMutation(({ id, status }: { id: string; status: string }) => groomingService.updateGroomingStatus(id, status), {
+    onSuccess: () => qc.invalidateQueries(['groomingRecords'])
+  });
+}
+
+export function useToggleGroomingService() {
+  const qc = useQueryClient();
+  return useMutation(({ id, isActive }: { id: string; isActive: boolean }) => groomingService.toggleGroomingService(id, isActive), {
+    onSuccess: () => qc.invalidateQueries(['groomingServices'])
+  });
+}
+
+export function useUpdateGroomingService() {
+  const qc = useQueryClient();
+  return useMutation(({ id, payload }: { id: string; payload: GroomingServicePayload }) => groomingService.updateGroomingService(id, payload), {
+    onSuccess: () => qc.invalidateQueries(['groomingServices'])
+  });
+}
+
+export function useTodaySchedule() {
+  return useQuery(['groomingTodaySchedule'], () => groomingService.getTodaySchedule());
+}

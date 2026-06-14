@@ -277,7 +277,7 @@ function ExpenseForm({ accounts, onSubmit, onCancel }: any) {
   const [reference, setReference] = useState('');
 
   return (
-    <form onSubmit={async (e) => { e.preventDefault(); await onSubmit({ accountId, amount: Number(amount), description, date, reference }); }} className="space-y-4">
+    <div className="space-y-4">
       <div>
         <label className="block text-sm text-slate-700">Account</label>
         <select value={accountId} onChange={(e) => setAccountId(e.target.value)} className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm">
@@ -302,8 +302,8 @@ function ExpenseForm({ accounts, onSubmit, onCancel }: any) {
       </div>
       <div className="flex gap-2 justify-end">
         <Button type="button" variant="outline" onClick={onCancel}>Cancel</Button>
-        <Button type="submit">Save</Button>
+        <Button type="button" onClick={async () => { await onSubmit({ accountId, amount: Number(amount), description, date, reference }); }}>Save</Button>
       </div>
-    </form>
+    </div>
   );
 }

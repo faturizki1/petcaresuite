@@ -32,8 +32,7 @@ export default function EditCustomerPage() {
   if (isLoading) return <div className="p-6">Loading...</div>;
   if (!data) return <div className="p-6">Not found</div>;
 
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function onSubmit() {
     try {
       await mutation.mutateAsync({
         id: id as string,
@@ -57,7 +56,7 @@ export default function EditCustomerPage() {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-semibold mb-4">Edit Customer</h1>
-      <form onSubmit={onSubmit} className="space-y-4 max-w-2xl">
+      <div className="space-y-4 max-w-2xl">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label className="block text-sm font-medium">Full name</label>
@@ -102,9 +101,9 @@ export default function EditCustomerPage() {
         </div>
 
         <div className="flex gap-2">
-          <Button type="submit">Save Customer</Button>
+          <Button type="button" onClick={onSubmit}>Save Customer</Button>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

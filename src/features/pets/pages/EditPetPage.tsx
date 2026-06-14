@@ -93,7 +93,7 @@ export default function EditPetPage() {
         </div>
       </div>
 
-      <form onSubmit={onSubmit} className="space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm max-w-3xl">
+      <div className="space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm max-w-3xl">
         <div className="grid gap-4 md:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-slate-700">Pet name</label>
@@ -204,7 +204,7 @@ export default function EditPetPage() {
         </div>
 
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
-      </form>
+      </div>
     </div>
   );
 }

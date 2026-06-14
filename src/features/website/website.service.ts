@@ -23,7 +23,7 @@ export const websiteService = {
   },
 
   async getArticleBySlug(slug: string): Promise<Article | null> {
-    const { data, error } = await supabase.from('articles').select('*').eq('slug', slug).single();
+    const { data, error } = await supabase.from('articles').select('*').eq('slug', slug).eq('is_published', true).single();
     if (error) handleSupabaseError(error);
     return data || null;
   },
@@ -91,6 +91,63 @@ export const websiteService = {
     }).select().single();
     if (error) handleSupabaseError(error);
     return data as Testimonial;
+  },
+
+  async getActiveServices() {
+    const { data, error } = await supabase
+      .from('services')
+      .select('id, name, description, price, duration_minutes, category')
+      .eq('is_active', true)
+      .limit(6);
+    if (error) handleSupabaseError(error);
+    return data || [];
+  },
+
+  async getActiveDoctors() {
+    const { data, error } = await supabase
+      .from('doctors')
+      .select('id, specialization, bio, photo_url, profiles(full_name)')
+      .eq('is_active', true);
+    if (error) handleSupabaseError(error);
+    return (data || []).map((doc: any) => ({
+      id: doc.id,
+      full_name: doc.profiles?.full_name || '',
+      specialization: doc.specialization,
+      bio: doc.bio,
+      photo_url: doc.photo_url
+    }));
+  },
+
+  async getActiveTestimonials() {
+    const { data, error } = await supabase
+      .from('testimonials')
+      .select('id, customer_name, content, rating')
+      .eq('is_active', true)
+      .limit(6);
+    if (error) handleSupabaseError(error);
+    return data || [];
+  },
+
+  async getLatestArticles() {
+    const { data, error } = await supabase
+      .from('articles')
+      .select('id, title, slug, excerpt, cover_url, published_at')
+      .eq('is_published', true)
+      .order('published_at', { ascending: false })
+      .limit(3);
+    if (error) handleSupabaseError(error);
+    return data || [];
+  },
+
+  async getAllActiveServices() {
+    const { data, error } = await supabase
+      .from('services')
+      .select('id, name, description, price, duration_minutes, category')
+      .eq('is_active', true)
+      .order('category', { ascending: true })
+      .order('name', { ascending: true });
+    if (error) handleSupabaseError(error);
+    return data || [];
   }
 };
 

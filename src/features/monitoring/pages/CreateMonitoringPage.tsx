@@ -60,7 +60,7 @@ export default function CreateMonitoringPage() {
   return (
     <div className="p-6 space-y-6">
       <PageHeader title="Create Monitoring Entry" description="Capture weight, medication, recovery notes, and owner uploads." />
-      <form className="space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="grid gap-4 md:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-slate-700">Pet ID</label>
@@ -118,7 +118,7 @@ export default function CreateMonitoringPage() {
             Cancel
           </Button>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

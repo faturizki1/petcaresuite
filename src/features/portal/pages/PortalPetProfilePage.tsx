@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Card, Button } from '@/components/ui';
 import FileUpload from '@/components/common/FileUpload';
@@ -36,8 +37,8 @@ export default function PortalPetProfilePage() {
             <FileUpload onUpload={async (file) => {
               try {
                 await uploadOwnerPhoto.mutateAsync({ petId: id, file });
-              } catch (err) {
-                // ignore for now
+              } catch {
+                toast.error('Failed to upload photo. Please try again.');
               }
             }} />
           </div>
@@ -152,8 +153,8 @@ export default function PortalPetProfilePage() {
                 <FileUpload onUpload={async (file) => {
                   try {
                     await uploadOwnerPhoto.mutateAsync({ petId: id, file });
-                  } catch (err) {
-                    // ignore for now
+                  } catch {
+                    toast.error('Failed to log medication. Please try again.');
                   }
                 }} />
               </div>

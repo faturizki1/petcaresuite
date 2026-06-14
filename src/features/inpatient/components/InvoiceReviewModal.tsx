@@ -14,8 +14,8 @@ export default function InvoiceReviewModal({ inpatientId, onClose }: { inpatient
       try {
         const inv = await posService.getInvoiceByInpatientRecord(inpatientId);
         if (mounted) setInvoice(inv);
-      } catch (err) {
-        // ignore
+      } catch {
+        toast.error('Failed to process invoice. Please try again.');
       }
     })();
     return () => { mounted = false; };

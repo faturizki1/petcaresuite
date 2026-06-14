@@ -34,6 +34,7 @@ const TemplatesPage = lazy(() => import('@/features/notifications/pages/Template
 const BroadcastPage = lazy(() => import('@/features/notifications/pages/BroadcastPage'));
 
 const InpatientPage = lazy(() => import('@/features/inpatient/pages/InpatientPage'));
+const InpatientDetailPage = lazy(() => import('@/features/inpatient/pages/InpatientDetailPage'));
 const AccountingPage = lazy(() => import('@/features/accounting/pages/AccountingPage'));
 const PetshopPage = lazy(() => import('@/features/petshop/pages/PetshopPage'));
 const ProductFormPage = lazy(() => import('@/features/petshop/pages/ProductFormPage'));
@@ -42,7 +43,7 @@ const PosPage = lazy(() => import('@/features/pos/pages/PosPage'));
 const TransactionsPage = lazy(() => import('@/features/pos/pages/TransactionsPage'));
 const InvoiceDetailPage = lazy(() => import('@/features/pos/pages/InvoiceDetailPage'));
 const InvoicesPage = lazy(() => import('@/pages/InvoicesPage').then((m) => ({ default: m.InvoicesPage })));
-const InventoryPage = lazy(() => import('@/pages/InventoryPage').then((m) => ({ default: m.InventoryPage })));
+const InventoryPage = lazy(() => import('@/features/inventory/pages/InventoryPage'));
 const VaccinationsPage = lazy(() => import('@/features/vaccinations/pages/VaccinationsPage'));
 const CreateVaccinationPage = lazy(() => import('@/features/vaccinations/pages/CreateVaccinationPage'));
 const VaccinationDetailPage = lazy(() => import('@/features/vaccinations/pages/VaccinationDetailPage'));
@@ -158,6 +159,7 @@ export const protectedRoutes: ProtectedRouteDefinition[] = [
   { path: 'staff/petshop/:id/edit', element: <ProductFormPage />, roles: ['owner', 'staff'], moduleKey: 'petshop' },
   { path: 'staff/grooming', element: <GroomingPage />, roles: ['owner', 'staff'], moduleKey: 'grooming' },
   { path: 'staff/inpatient', element: <InpatientPage />, roles: ['owner', 'staff'], moduleKey: 'inpatient' },
+  { path: 'staff/inpatient/:id', element: <InpatientDetailPage />, roles: ['owner', 'staff', 'doctor'], moduleKey: 'inpatient' },
   { path: 'staff/accounting', element: <AccountingPage />, roles: ['owner', 'staff'], moduleKey: 'accounting' },
   { path: 'staff/notifications', element: <NotificationLogPage />, roles: ['owner', 'staff'] },
   { path: 'staff/notifications/templates', element: <TemplatesPage />, roles: ['owner', 'staff'] },

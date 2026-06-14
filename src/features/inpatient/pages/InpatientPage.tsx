@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, HeartPulse, ClipboardList, Save, Activity } from 'lucide-react';
 import { PageHeader } from '@/components/common/PageHeader';
 import { DataTable } from '@/components/common/DataTable';
@@ -14,6 +15,7 @@ import type { CartItem } from '@/features/pos/pos.types';
 import type { Cage, InpatientRecord } from '../inpatient.types';
 
 export default function InpatientPage() {
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
   const [page, setPage] = useState(1);
@@ -150,7 +152,17 @@ export default function InpatientPage() {
                 </div>
                 <div className="text-sm text-slate-600">Available cages: {availableCages.length}</div>
               </div>
-              <CageGrid cages={cages} inpatientRecords={items} onCageClick={openAdmitModal} />
+              <CageGrid
+                cages={cages}
+                inpatientRecords={items}
+                onCageClick={(cage, inpatient) => {
+                  if (cage.status === 'occupied' && inpatient) {
+                    navigate(`/staff/inpatient/${inpatient.id}`);
+                  } else if (cage.status === 'available') {
+                    openAdmitModal(cage);
+                  }
+                }}
+              />
             </div>
           </div>
 
@@ -191,6 +203,9 @@ export default function InpatientPage() {
                     title: 'Actions',
                     render: (record: any) => (
                       <div className="flex flex-wrap gap-2">
+                        <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); navigate(`/staff/inpatient/${record.id}`); }}>
+                          View
+                        </Button>
                         {record.status === 'admitted' ? (
                           <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); void handleOpenDischarge(record); }}>
                             Discharge

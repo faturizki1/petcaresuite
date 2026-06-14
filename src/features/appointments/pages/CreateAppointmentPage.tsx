@@ -86,7 +86,7 @@ export default function CreateAppointmentPage() {
         description="Schedule a new consultation in six steps: customer, pet, service, doctor, date, and review."
       />
 
-      <form onSubmit={onSubmit} className="space-y-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="space-y-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="space-y-2 rounded-3xl border border-slate-100 bg-slate-50 p-4">
           <p className="text-sm font-semibold text-slate-900">Step 1: Customer</p>
           <div className="grid gap-4 md:grid-cols-2">
@@ -279,7 +279,7 @@ export default function CreateAppointmentPage() {
             Cancel
           </Button>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

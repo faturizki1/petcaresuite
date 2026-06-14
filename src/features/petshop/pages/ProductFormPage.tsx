@@ -129,7 +129,7 @@ export default function ProductFormPage() {
         description={editMode ? 'Update product details, variants, and images.' : 'Add a new petshop product and define variants.'}
       />
 
-      <form onSubmit={handleSubmit} className="space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="space-y-4">
           <h2 className="text-lg font-semibold text-slate-900">Basic information</h2>
           <div className="grid gap-4 md:grid-cols-2">
@@ -269,7 +269,7 @@ export default function ProductFormPage() {
           </Button>
           <Button type="button" variant="outline" onClick={() => navigate('/staff/petshop')}>Cancel</Button>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

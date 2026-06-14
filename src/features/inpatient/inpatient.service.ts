@@ -274,5 +274,52 @@ export const inpatientService = {
     if (error) handleSupabaseError(error);
     if (!data) throw new Error('Unable to schedule medication');
     return mapMedicationSchedule(data);
+  },
+
+  async addDailyObservation(inpatientRecordId: string, payload: { temperature?: number; appetite?: string; weight?: number; condition?: string; notes?: string }): Promise<Observation> {
+    const { data, error } = await supabase
+      .from('daily_observations')
+      .insert({
+        inpatient_record_id: inpatientRecordId,
+        temperature: payload.temperature,
+        appetite: payload.appetite,
+        weight: payload.weight,
+        condition: payload.condition,
+        notes: payload.notes
+      })
+      .select()
+      .single();
+    if (error) handleSupabaseError(error);
+    if (!data) throw new Error('Unable to add daily observation');
+    return mapObservation(data);
+  },
+
+  async addInpatientMedication(inpatientRecordId: string, payload: { drugName: string; dose: string; scheduleTime: string; notes?: string }): Promise<MedicationSchedule> {
+    const { data, error } = await supabase
+      .from('inpatient_medication_schedules')
+      .insert({
+        inpatient_record_id: inpatientRecordId,
+        drug_name: payload.drugName,
+        dose: payload.dose,
+        schedule_time: payload.scheduleTime,
+        status: 'pending'
+      })
+      .select()
+      .single();
+    if (error) handleSupabaseError(error);
+    if (!data) throw new Error('Unable to add medication');
+    return mapMedicationSchedule(data);
+  },
+
+  async markMedicationGiven(medicationId: string): Promise<MedicationSchedule> {
+    const { data, error } = await supabase
+      .from('inpatient_medication_schedules')
+      .update({ status: 'given', given_at: new Date().toISOString() })
+      .eq('id', medicationId)
+      .select()
+      .single();
+    if (error) handleSupabaseError(error);
+    if (!data) throw new Error('Unable to mark medication as given');
+    return mapMedicationSchedule(data);
   }
 };

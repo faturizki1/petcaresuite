@@ -46,7 +46,7 @@ export default function CreateVaccinationPage() {
   return (
     <div className="p-6 space-y-6">
       <PageHeader title="Create Vaccination" description="Log a new vaccine administration and schedule the next due date." />
-      <form className="space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="space-y-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="grid gap-4 md:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-slate-700">Pet ID</label>
@@ -94,7 +94,7 @@ export default function CreateVaccinationPage() {
             Cancel
           </Button>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

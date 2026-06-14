@@ -330,8 +330,7 @@ export const inventoryService = {
     return lowStockItems.sort((a, b) => a.currentStock - b.currentStock);
   },
 
-      if (error) handleSupabaseError(error);
-      if (!data) throw new Error('Unable to add batch');
+  async getInventoryValue() {
     const { data, error } = await supabase.rpc('inventory_value_by_category');
     if (error) handleSupabaseError(error);
     return Array.isArray(data) ? data.map(mapInventoryValue) : [];

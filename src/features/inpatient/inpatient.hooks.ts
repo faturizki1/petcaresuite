@@ -62,3 +62,47 @@ export function useScheduleMedication() {
     }
   });
 }
+
+export function useInpatientBill(inpatientRecordId?: string) {
+  return useQuery(['inpatientBill', inpatientRecordId], () => (inpatientRecordId ? inpatientService.getInpatientBill(inpatientRecordId) : null), {
+    enabled: !!inpatientRecordId
+  });
+}
+
+export function useAddDailyObservation() {
+  const qc = useQueryClient();
+  return useMutation(
+    ({ inpatientRecordId, payload }: { inpatientRecordId: string; payload: { temperature?: number; appetite?: string; weight?: number; condition?: string; notes?: string } }) =>
+      inpatientService.addDailyObservation(inpatientRecordId, payload),
+    {
+      onSuccess: (_data, variables) => {
+        qc.invalidateQueries(['observations', variables.inpatientRecordId]);
+      }
+    }
+  );
+}
+
+export function useAddInpatientMedication() {
+  const qc = useQueryClient();
+  return useMutation(
+    ({ inpatientRecordId, payload }: { inpatientRecordId: string; payload: { drugName: string; dose: string; scheduleTime: string; notes?: string } }) =>
+      inpatientService.addInpatientMedication(inpatientRecordId, payload),
+    {
+      onSuccess: (_data, variables) => {
+        qc.invalidateQueries(['medicationSchedules', variables.inpatientRecordId]);
+      }
+    }
+  );
+}
+
+export function useMarkMedicationGiven() {
+  const qc = useQueryClient();
+  return useMutation(
+    (medicationId: string) => inpatientService.markMedicationGiven(medicationId),
+    {
+      onSuccess: () => {
+        qc.invalidateQueries(['medicationSchedules']);
+      }
+    }
+  );
+}

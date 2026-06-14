@@ -160,7 +160,7 @@ export default function PetshopPage() {
         <div className="space-y-6">
           <Card className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="text-lg font-semibold text-slate-900">New product</h2>
-            <form onSubmit={handleCreateProduct} className="mt-5 space-y-4">
+            <div className="mt-5 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700">Name</label>
                 <Input value={productName} onChange={(event) => setProductName(event.target.value)} />
@@ -198,12 +198,12 @@ export default function PetshopPage() {
               <Button type="submit" disabled={createProduct.isLoading}>
                 <Plus className="w-4 h-4 mr-2" /> Add product
               </Button>
-            </form>
+            </div>
           </Card>
 
           <Card className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
             <h2 className="text-lg font-semibold text-slate-900">New variant</h2>
-            <form onSubmit={handleCreateVariant} className="mt-5 space-y-4">
+            <div className="mt-5 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700">Product</label>
                 <select value={variantProductId} onChange={(event) => setVariantProductId(event.target.value)} className="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm shadow-sm">
@@ -228,7 +228,7 @@ export default function PetshopPage() {
               <Button type="submit" disabled={createVariant.isLoading}>
                 <Plus className="w-4 h-4 mr-2" /> Add variant
               </Button>
-            </form>
+            </div>
           </Card>
         </div>
       </div>

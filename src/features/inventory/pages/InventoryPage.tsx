@@ -268,7 +268,7 @@ export default function InventoryPage() {
 
             <Card className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <h2 className="text-lg font-semibold text-slate-900">Create inventory item</h2>
-              <form onSubmit={handleCreateItem} className="mt-5 space-y-4">
+              <div className="mt-5 space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-700">Item name</label>
                   <Input value={itemName} onChange={(event) => setItemName(event.target.value)} />
@@ -309,7 +309,7 @@ export default function InventoryPage() {
                 <Button type="submit" disabled={createItem.isLoading}>
                   <Plus className="w-4 h-4 mr-2" /> Add item
                 </Button>
-              </form>
+              </div>
             </Card>
           </div>
         </TabsContent>
@@ -346,7 +346,7 @@ export default function InventoryPage() {
 
             <Card className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <h2 className="text-lg font-semibold text-slate-900">Receive stock</h2>
-              <form onSubmit={handleCreateBatch} className="mt-5 space-y-4">
+              <div className="mt-5 space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-700">Inventory item</label>
                   <select
@@ -396,7 +396,7 @@ export default function InventoryPage() {
                 <Button type="submit" disabled={createBatch.isLoading}>
                   <Plus className="w-4 h-4 mr-2" /> Receive batch
                 </Button>
-              </form>
+              </div>
             </Card>
           </div>
         </TabsContent>

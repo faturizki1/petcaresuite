@@ -118,7 +118,7 @@ export default function CreateMedicalRecordPage() {
         description="Capture SOAP notes, prescriptions, and supporting attachments for a pet visit."
       />
 
-      <form className="space-y-6 bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
+      <div className="space-y-6 bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
         <div className="grid gap-4 md:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-slate-700">Patient</label>
@@ -301,7 +301,7 @@ export default function CreateMedicalRecordPage() {
             Cancel
           </Button>
         </div>
-      </form>
+      </div>
     </div>
   );
 }
