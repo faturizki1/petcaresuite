@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { ShoppingCart, Receipt } from 'lucide-react';
 import { PageHeader } from '@/components/common/PageHeader';
-import { Button, Card, Input, RadioGroup, RadioGroupItem } from '@/components/ui';
+import { Button, Card, Input, Tabs, TabsList, TabsTrigger } from '@/components/ui';
 import { useDebounce } from '@/hooks/useDebounce';
 import { posService } from '../pos.service';
 import useCartStore from '../stores/cart.store';
@@ -181,16 +181,12 @@ export default function PosPage() {
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2">
-              <RadioGroup value={tab} onValueChange={(value) => setTab(value as 'products' | 'services')} className="flex gap-2">
-                <label className="inline-flex items-center gap-2">
-                  <RadioGroupItem value="products" /> Products
-                </label>
-                <label className="inline-flex items-center gap-2">
-                  <RadioGroupItem value="services" /> Services
-                </label>
-              </RadioGroup>
-            </div>
+            <Tabs value={tab} onValueChange={(v) => setTab(v as 'products' | 'services')}>
+              <TabsList className="w-full">
+                <TabsTrigger value="products" className="flex-1">Products</TabsTrigger>
+                <TabsTrigger value="services" className="flex-1">Services</TabsTrigger>
+              </TabsList>
+            </Tabs>
 
             <div className="mt-3">
               <Input

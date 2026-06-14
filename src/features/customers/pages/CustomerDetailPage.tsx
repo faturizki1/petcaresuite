@@ -4,7 +4,7 @@ import { useCustomer, useCustomerPets, useCustomerInvoices, useCustomerActivityL
 import LoyaltyPointsCard from '../components/LoyaltyPointsCard';
 import CustomerStatusBadge from '../components/CustomerStatusBadge';
 import { PageHeader } from '@/components/common/PageHeader';
-import { Button } from '@/components/ui';
+import { Button, Skeleton } from '@/components/ui';
 
 export default function CustomerDetailPage() {
   const { id } = useParams();
@@ -16,7 +16,7 @@ export default function CustomerDetailPage() {
 
   const customer = data as any;
 
-  if (isLoading) return <div className="p-6">Loading...</div>;
+  if (isLoading) return <div className="p-6 space-y-4"><Skeleton className="h-8 w-64" /><Skeleton className="h-40 w-full rounded-3xl" /><Skeleton className="h-40 w-full rounded-3xl" /></div>;
   if (!customer) return <div className="p-6">Customer not found.</div>;
 
   return (

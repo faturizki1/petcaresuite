@@ -30,7 +30,7 @@ export default function WebsiteContentPage() {
       values.email = content.email || '';
     } else {
       Object.entries(content).forEach(([key, val]) => {
-        values[key] = typeof val === 'string' ? val : JSON.stringify(val);
+        values[key] = typeof val === 'string' ? val : String(val);
       });
     }
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, FileText, CheckCircle, XCircle } from 'lucide-react';
 import { PageHeader } from '@/components/common/PageHeader';
-import { Button } from '@/components/ui';
+import { Button, Skeleton } from '@/components/ui';
 import { useMonitoringEntry, useApproveUpload } from '../monitoring.hooks';
 
 export default function MonitoringDetailPage() {
@@ -11,7 +11,7 @@ export default function MonitoringDetailPage() {
   const { data, isLoading } = useMonitoringEntry(id);
   const approveUpload = useApproveUpload();
 
-  if (isLoading) return <div className="p-6">Loading...</div>;
+  if (isLoading) return <div className="p-6 space-y-4"><Skeleton className="h-8 w-64" /><Skeleton className="h-40 w-full rounded-3xl" /><Skeleton className="h-40 w-full rounded-3xl" /></div>;
   if (!data) return <div className="p-6">Monitoring entry not found.</div>;
 
   return (

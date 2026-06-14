@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PageHeader } from '@/components/common/PageHeader';
-import { Button, Card } from '@/components/ui';
+import { Button, Card, Skeleton } from '@/components/ui';
 import { useInvoice, useProcessRefund } from '../pos.hooks';
 import RefundModal from '../components/RefundModal';
 import { formatCurrency, formatDate } from '@/lib/utils';
@@ -14,7 +14,7 @@ export default function InvoiceDetailPage() {
   const [refundOpen, setRefundOpen] = useState(false);
 
   if (isLoading) {
-    return <div className="p-6">Loading...</div>;
+    return <div className="p-6 space-y-4"><Skeleton className="h-8 w-64" /><Skeleton className="h-40 w-full rounded-3xl" /><Skeleton className="h-40 w-full rounded-3xl" /></div>;
   }
 
   if (!invoice) {

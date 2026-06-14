@@ -19,11 +19,14 @@ function SectionSkeleton({ lines = 4 }: { lines?: number }) {
   );
 }
 
-function StatCard({ title, value, description }: { title: string; value: string; description: string }) {
+function StatCard({ title, value, description, isLoading }: { title: string; value: string; description: string; isLoading?: boolean }) {
   return (
     <Card className="space-y-3 p-6">
       <div className="text-sm font-medium text-slate-500 dark:text-slate-400">{title}</div>
-      <div className="text-3xl font-semibold text-slate-950 dark:text-slate-100">{value}</div>
+      {isLoading
+        ? <Skeleton className="h-9 w-24 mt-2" />
+        : <div className="text-3xl font-semibold text-slate-950 dark:text-slate-100">{value}</div>
+      }
       <p className="text-sm text-slate-600 dark:text-slate-400">{description}</p>
     </Card>
   );
@@ -50,11 +53,11 @@ function OwnerDashboard() {
   return (
     <div className="space-y-6">
       <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-5">
-        <StatCard title="Revenue today" value={statsQuery.isLoading ? 'Loading...' : formatCurrency(stats?.revenueToday ?? 0)} description="Paid invoice revenue captured so far today." />
-        <StatCard title="Appointments today" value={statsQuery.isLoading ? 'Loading...' : String(stats?.appointmentsToday ?? 0)} description="Scheduled patient visits for today." />
-        <StatCard title="Active inpatients" value={statsQuery.isLoading ? 'Loading...' : String(stats?.activeInpatients ?? 0)} description="Pets currently admitted in inpatient care." />
-        <StatCard title="Pending vaccinations" value={statsQuery.isLoading ? 'Loading...' : String(stats?.pendingVaccinations ?? 0)} description="Vaccination reminders due soon." />
-        <StatCard title="Low stock alerts" value={statsQuery.isLoading ? 'Loading...' : String(stats?.lowStockCount ?? 0)} description="Items at or below minimum stock levels." />
+        <StatCard title="Revenue today" value={formatCurrency(stats?.revenueToday ?? 0)} description="Paid invoice revenue captured so far today." isLoading={statsQuery.isLoading} />
+        <StatCard title="Appointments today" value={String(stats?.appointmentsToday ?? 0)} description="Scheduled patient visits for today." isLoading={statsQuery.isLoading} />
+        <StatCard title="Active inpatients" value={String(stats?.activeInpatients ?? 0)} description="Pets currently admitted in inpatient care." isLoading={statsQuery.isLoading} />
+        <StatCard title="Pending vaccinations" value={String(stats?.pendingVaccinations ?? 0)} description="Vaccination reminders due soon." isLoading={statsQuery.isLoading} />
+        <StatCard title="Low stock alerts" value={String(stats?.lowStockCount ?? 0)} description="Items at or below minimum stock levels." isLoading={statsQuery.isLoading} />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[2fr_1fr]">
@@ -186,9 +189,9 @@ function DoctorDashboard() {
   return (
     <div className="space-y-6">
       <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard title="Today appointments" value={doctorQuery.isLoading ? 'Loading...' : String(appointmentRows.length)} description="Sessions scheduled for you today." />
-        <StatCard title="Active inpatients" value={doctorQuery.isLoading ? 'Loading...' : String(doctorStats?.activeInpatients ?? 0)} description="Patients currently in inpatient care." />
-        <StatCard title="Recent records" value={doctorQuery.isLoading ? 'Loading...' : String(recordRows.length)} description="Latest case notes created." />
+        <StatCard title="Today appointments" value={String(appointmentRows.length)} description="Sessions scheduled for you today." isLoading={doctorQuery.isLoading} />
+        <StatCard title="Active inpatients" value={String(doctorStats?.activeInpatients ?? 0)} description="Patients currently in inpatient care." isLoading={doctorQuery.isLoading} />
+        <StatCard title="Recent records" value={String(recordRows.length)} description="Latest case notes created." isLoading={doctorQuery.isLoading} />
         <Card className="space-y-3 p-6">
           <div className="text-sm font-medium text-slate-500 dark:text-slate-400">Next actions</div>
           <p className="text-slate-700 dark:text-slate-200">Review upcoming appointments, update treatment notes, and close today&apos;s cases.</p>
@@ -263,9 +266,9 @@ function StaffDashboard() {
   return (
     <div className="space-y-6">
       <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard title="Today appointments" value={staffQuery.isLoading ? 'Loading...' : String(appointments.length)} description="Tasks scheduled for your team today." />
-        <StatCard title="Grooming today" value={staffQuery.isLoading ? 'Loading...' : String(grooming.length)} description="Grooming services set for today." />
-        <StatCard title="Low stock alerts" value={staffQuery.isLoading ? 'Loading...' : String(lowStock.length)} description="Needed inventory restocks." />
+        <StatCard title="Today appointments" value={String(appointments.length)} description="Tasks scheduled for your team today." isLoading={staffQuery.isLoading} />
+        <StatCard title="Grooming today" value={String(grooming.length)} description="Grooming services set for today." isLoading={staffQuery.isLoading} />
+        <StatCard title="Low stock alerts" value={String(lowStock.length)} description="Needed inventory restocks." isLoading={staffQuery.isLoading} />
         <Card className="space-y-3 p-6">
           <div className="text-sm font-medium text-slate-500 dark:text-slate-400">Operational overview</div>
           <p className="text-slate-700 dark:text-slate-200">Keep track of service delivery, stock, and customer appointments.</p>
@@ -371,9 +374,9 @@ function CustomerDashboard() {
   return (
     <div className="space-y-6">
       <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard title="Your pets" value={summaryQuery.isLoading ? 'Loading...' : String(summary?.petCount ?? 0)} description="Pets currently registered in your account." />
-        <StatCard title="Upcoming visits" value={summaryQuery.isLoading ? 'Loading...' : String(summary?.appointmentCount ?? 0)} description="Future appointments scheduled for you." />
-        <StatCard title="Invoices" value={summaryQuery.isLoading ? 'Loading...' : String(summary?.invoiceCount ?? 0)} description="Recent billing records on file." />
+        <StatCard title="Your pets" value={String(summary?.petCount ?? 0)} description="Pets currently registered in your account." isLoading={summaryQuery.isLoading} />
+        <StatCard title="Upcoming visits" value={String(summary?.appointmentCount ?? 0)} description="Future appointments scheduled for you." isLoading={summaryQuery.isLoading} />
+        <StatCard title="Invoices" value={String(summary?.invoiceCount ?? 0)} description="Recent billing records on file." isLoading={summaryQuery.isLoading} />
         <Card className="space-y-3 p-6">
           <div className="text-sm font-medium text-slate-500 dark:text-slate-400">Account</div>
           <p className="text-slate-700 dark:text-slate-200">Manage bookings, payment history, and pet records in one place.</p>

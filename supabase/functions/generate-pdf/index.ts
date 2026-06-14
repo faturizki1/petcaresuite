@@ -13,8 +13,10 @@ const supabase = createClient(supabaseUrl, supabaseServiceRoleKey, {
 });
 
 interface GeneratePdfPayload {
-  type: 'receipt' | 'vaccine-certificate' | 'invoice';
-  id: string;
+  type: 'receipt' | 'vaccine-certificate' | 'invoice' | 'profit-loss';
+  id?: string;
+  month?: number;
+  year?: number;
 }
 
 function bufferFromDoc(doc: PDFKit.PDFDocument): Promise<Uint8Array> {
@@ -47,8 +49,15 @@ export async function handler(request: Request) {
   }
 
   const payload = (await request.json()) as GeneratePdfPayload;
-  if (!payload?.type || !payload?.id) {
+  if (!payload?.type) {
     return new Response(JSON.stringify({ success: false, message: 'Missing required payload' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  if (payload.type !== 'profit-loss' && !payload?.id) {
+    return new Response(JSON.stringify({ success: false, message: 'Missing required id' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' }
     });
@@ -112,6 +121,55 @@ export async function handler(request: Request) {
     if (invoice.payment_method_secondary) {
       doc.text(`Secondary Payment: ${invoice.payment_method_secondary}`);
     }
+  } else if (payload.type === 'profit-loss') {
+    const month = payload.month ?? new Date().getMonth() + 1;
+    const year = payload.year ?? new Date().getFullYear();
+    const startDate = new Date(year, month - 1, 1).toISOString();
+    const endDate = new Date(year, month, 0, 23, 59, 59).toISOString();
+
+    const { data: transactions, error: txError } = await supabase
+      .from('transactions')
+      .select('*, account:account_id(name, type)')
+      .gte('transaction_date', startDate)
+      .lte('transaction_date', endDate)
+      .order('transaction_date', { ascending: true });
+
+    if (txError) {
+      return new Response(JSON.stringify({ success: false, message: txError.message }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    const incomeItems = (transactions || []).filter((t: any) => t.type === 'credit');
+    const expenseItems = (transactions || []).filter((t: any) => t.type === 'debit');
+    const totalIncome = incomeItems.reduce((sum: number, t: any) => sum + Number(t.amount), 0);
+    const totalExpense = expenseItems.reduce((sum: number, t: any) => sum + Number(t.amount), 0);
+    const netProfit = totalIncome - totalExpense;
+
+    createBaseHeader();
+    doc.fontSize(16).text('Profit & Loss Report', { underline: true, align: 'center' });
+    doc.moveDown();
+    doc.fontSize(12).text(`Period: ${month}/${year}`);
+    doc.moveDown(1);
+
+    doc.fontSize(14).text('Income', { underline: true });
+    doc.moveDown(0.5);
+    incomeItems.forEach((t: any) => {
+      doc.fontSize(10).text(`${t.account?.name ?? 'Unknown'}: ${formatCurrency(t.amount)}`);
+    });
+    doc.fontSize(10).text(`Total Income: ${formatCurrency(totalIncome)}`, { continued: false });
+    doc.moveDown(1);
+
+    doc.fontSize(14).text('Expenses', { underline: true });
+    doc.moveDown(0.5);
+    expenseItems.forEach((t: any) => {
+      doc.fontSize(10).text(`${t.account?.name ?? 'Unknown'}: ${formatCurrency(t.amount)}`);
+    });
+    doc.fontSize(10).text(`Total Expenses: ${formatCurrency(totalExpense)}`, { continued: false });
+    doc.moveDown(1);
+
+    doc.fontSize(14).text(`Net Profit: ${formatCurrency(netProfit)}`, { underline: true });
   } else if (payload.type === 'vaccine-certificate') {
     const { data: record, error: recordError } = await supabase
       .from('vaccination_records')
@@ -146,7 +204,9 @@ export async function handler(request: Request) {
   }
 
   const buffer = await bufferFromDoc(doc);
-  const path = `${payload.type}/${payload.id}.pdf`;
+  const path = payload.type === 'profit-loss'
+    ? `profit-loss/${payload.year ?? new Date().getFullYear()}-${payload.month ?? new Date().getMonth() + 1}.pdf`
+    : `${payload.type}/${payload.id}.pdf`;
   const { error: uploadError } = await supabase.storage.from('documents').upload(path, buffer, { upsert: true });
 
   if (uploadError) {

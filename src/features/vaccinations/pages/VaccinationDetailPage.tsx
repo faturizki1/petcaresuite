@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { ArrowLeft, Download } from 'lucide-react';
 import { PageHeader } from '@/components/common/PageHeader';
-import { Button } from '@/components/ui';
+import { Button, Skeleton } from '@/components/ui';
 import { useVaccinationRecord, useGenerateVaccinationCertificate, useAttachVaccinationCertificate } from '../vaccinations.hooks';
 
 export default function VaccinationDetailPage() {
@@ -13,7 +13,7 @@ export default function VaccinationDetailPage() {
   const gen = useGenerateVaccinationCertificate();
   const attach = useAttachVaccinationCertificate();
 
-  if (isLoading) return <div className="p-6">Loading...</div>;
+  if (isLoading) return <div className="p-6 space-y-4"><Skeleton className="h-8 w-64" /><Skeleton className="h-40 w-full rounded-3xl" /><Skeleton className="h-40 w-full rounded-3xl" /></div>;
   if (!record) return <div className="p-6">Vaccination record not found.</div>;
 
   return (

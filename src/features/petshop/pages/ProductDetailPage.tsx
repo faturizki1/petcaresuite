@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { PageHeader } from '@/components/common/PageHeader';
-import { Button, Card } from '@/components/ui';
+import { Button, Card, Skeleton } from '@/components/ui';
 import { useProduct } from '../petshop.hooks';
 import { formatCurrency } from '@/lib/utils';
 
@@ -10,7 +10,7 @@ export default function ProductDetailPage() {
   const navigate = useNavigate();
   const { data: product, isLoading } = useProduct(id);
 
-  if (isLoading) return <div className="p-6">Loading...</div>;
+  if (isLoading) return <div className="p-6 space-y-4"><Skeleton className="h-8 w-64" /><Skeleton className="h-40 w-full rounded-3xl" /><Skeleton className="h-40 w-full rounded-3xl" /></div>;
   if (!product) return <div className="p-6">Product not found</div>;
 
   return (

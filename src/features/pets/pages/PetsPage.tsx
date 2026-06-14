@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Search, Plus } from 'lucide-react';
 import { useGetPets, useSpecies } from '../pets.hooks';
 import { PageHeader } from '@/components/common/PageHeader';
-import { Button, Input } from '@/components/ui';
+import { Button, Input, Skeleton } from '@/components/ui';
 
 export default function PetsPage() {
   const [search, setSearch] = useState('');
@@ -54,7 +54,7 @@ export default function PetsPage() {
 
       <div className="grid gap-4 md:grid-cols-3">
         {isLoading ? (
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 text-center">Loading...</div>
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 space-y-3"><Skeleton className="h-6 w-full" /><Skeleton className="h-6 w-full" /><Skeleton className="h-6 w-full" /></div>
         ) : items.length === 0 ? (
           <div className="rounded-3xl border border-dashed border-slate-200 bg-slate-50 p-6 text-center text-slate-600">No pets found.</div>
         ) : (

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useCustomers } from '../customers.hooks';
 import CustomerStatusBadge from '../components/CustomerStatusBadge';
 import { PageHeader } from '@/components/common/PageHeader';
-import { Button, Input } from '@/components/ui';
+import { Button, Input, Skeleton } from '@/components/ui';
 
 export default function CustomersPage() {
   const [search, setSearch] = useState('');
@@ -57,7 +57,7 @@ export default function CustomersPage() {
 
       <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
         {isLoading ? (
-          <div className="p-6">Loading...</div>
+          <div className="p-6 space-y-3"><Skeleton className="h-6 w-full" /><Skeleton className="h-6 w-full" /><Skeleton className="h-6 w-full" /></div>
         ) : items.length === 0 ? (
           <div className="p-6 text-center">No customers found.</div>
         ) : (

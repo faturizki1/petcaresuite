@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useCustomer, useUpdateCustomer } from '../customers.hooks';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Input } from '@/components/ui';
+import { Button, Input, Skeleton } from '@/components/ui';
 
 export default function EditCustomerPage() {
   const { id } = useParams();
@@ -29,7 +29,7 @@ export default function EditCustomerPage() {
     }
   }, [data]);
 
-  if (isLoading) return <div className="p-6">Loading...</div>;
+  if (isLoading) return <div className="p-6 space-y-4"><Skeleton className="h-8 w-64" /><Skeleton className="h-40 w-full rounded-3xl" /><Skeleton className="h-40 w-full rounded-3xl" /></div>;
   if (!data) return <div className="p-6">Not found</div>;
 
   async function onSubmit() {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { usePet, useUpdatePet, useSpecies, useBreeds } from '../pets.hooks';
 import { useCustomers } from '@/features/customers/customers.hooks';
-import { Button, Input } from '@/components/ui';
+import { Button, Input, Skeleton } from '@/components/ui';
 
 export default function EditPetPage() {
   const { id } = useParams();
@@ -46,7 +46,7 @@ export default function EditPetPage() {
     setBreedId((current) => (speciesId && breedsQuery.data?.find((breed) => breed.id === current) ? current : ''));
   }, [speciesId, breedsQuery.data]);
 
-  if (isLoading) return <div className="p-6">Loading...</div>;
+  if (isLoading) return <div className="p-6 space-y-4"><Skeleton className="h-8 w-64" /><Skeleton className="h-40 w-full rounded-3xl" /><Skeleton className="h-40 w-full rounded-3xl" /></div>;
   if (!data) return <div className="p-6">Not found</div>;
 
   const customers = customersQuery.data?.items ?? [];

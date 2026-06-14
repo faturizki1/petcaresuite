@@ -5,6 +5,7 @@ import { usePetVaccinations } from '@/features/vaccinations/vaccinations.hooks';
 import { usePetMonitoring } from '@/features/monitoring/monitoring.hooks';
 import { usePetTimeline } from '../pets.hooks';
 import { useMedicalRecords } from '@/features/medical-records/medical-records.hooks';
+import { Skeleton } from '@/components/ui';
 import PetQRCard from '../components/PetQRCard';
 
 export default function PetProfilePage() {
@@ -17,7 +18,7 @@ export default function PetProfilePage() {
   const pet = data as any;
   const [tab, setTab] = useState<'overview'|'medical'|'vaccinations'|'monitoring'|'timeline'>('overview');
 
-  if (isLoading) return <div className="p-6">Loading...</div>;
+  if (isLoading) return <div className="p-6 space-y-4"><Skeleton className="h-8 w-64" /><Skeleton className="h-40 w-full rounded-3xl" /><Skeleton className="h-40 w-full rounded-3xl" /></div>;
   if (!pet) return <div className="p-6">Pet not found</div>;
 
   return (
